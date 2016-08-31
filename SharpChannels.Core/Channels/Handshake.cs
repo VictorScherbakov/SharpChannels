@@ -15,7 +15,9 @@ namespace SharpChannels.Core.Channels
             hash |= (version.Major & 0x0000000F) << 28;
             hash |= (version.Minor & 0x000000FF) << 20;
             hash |= (version.Build & 0x000000FF) << 12;
+            hash |= version.Revision & 0x00000FFF;
 
+            byte byte1 = (byte)(hash & 0x000000FF);
             byte byte2 = (byte)((hash & 0x0000FF00) >> 8);
 
             byte byte3 = (byte)((hash & 0x00FF0000) >> 16);
