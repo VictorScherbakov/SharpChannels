@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{3A58294D-07FA-4D64-82FD-21F873B4863B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SharpChannels.Core</RootNamespace>
+    <AssemblyName>SharpChannels.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Channels\IChannel[TMessage].cs" />
+    <Compile Include="Channels\Intradomain\IntradomainChannelAwaiterBase.cs" />
+    <Compile Include="Channels\Intradomain\IntradomainSocket.cs" />
+    <Compile Include="Channels\Intradomain\SocketType.cs" />
+    <Compile Include="Channels\Intradomain\IntradomainChannelAwaiter[TMessage].cs" />
+    <Compile Include="Channels\Intradomain\IntradomainChannel[TMessage].cs" />
+    <Compile Include="Channels\Intradomain\IntradomainChannel.cs" />
+    <Compile Include="Channels\Intradomain\IntradomainChannelAwaiter.cs" />
+    <Compile Include="Channels\Intradomain\IntradomainConnectionManager.cs" />
+    <Compile Include="Channels\Intradomain\IntradomainSocketState.cs" />
+    <Compile Include="Channels\Intradomain\IntradomainConnetcion.cs" />
+    <Compile Include="Channels\Intradomain\IntradomainEndpoint.cs" />
+    <Compile Include="Channels\Intradomain\IntradomainConnectionSettings.cs" />
+    <Compile Include="Channels\Intradomain\IntradomainStream.cs" />
+    <Compile Include="Channels\NewChannelRequestAcceptor.cs" />
+    <Compile Include="Channels\ClientAcceptedEventArgs.cs" />
+    <Compile Include="Channels\DataTransferErrorCode.cs" />
+    <Compile Include="Channels\DataTransferException.cs" />
+    <Compile Include="Channels\Handshake.cs" />
+    <Compile Include="Channels\IChannelEssentials.cs" />
+    <Compile Include="Channels\INewChannelRequestAcceptor.cs" />
+    <Compile Include="Channels\ChannelBase.cs" />
+    <Compile Include="Channels\ProtocolErrorCode.cs" />
+    <Compile Include="Channels\ProtocolException.cs" />
+    <Compile Include="Channels\ChannelSettings.cs" />
+    <Compile Include="Channels\ErrorCreatingChannelEventArgs.cs" />
+    <Compile Include="Channels\Tcp\TcpChannelAwaiter[TMessage].cs" />
+    <Compile Include="Channels\Tcp\TcpChannel[TMessage].cs" />
+    <Compile Include="Channels\Tcp\TcpConnectionSettings.cs" />
+    <Compile Include="Communication\IRequester[TMessage].cs" />
+    <Compile Include="Communication\IResponder[TMessage].cs" />
+    <Compile Include="Communication\Requester[TMessage].cs" />
+    <Compile Include="Communication\IRequester.cs" />
+    <Compile Include="Communication\IResponder.cs" />
+    <Compile Include="Communication\Responder.cs" />
+    <Compile Include="Messages\MessageEventArgs.cs" />
+    <Compile Include="Communication\Requester.cs" />
+    <Compile Include="Messages\MessageType.cs" />
+    <Compile Include="Communication\Receiver.cs" />
+    <Compile Include="Messages\RequestReceivedArgs[TMessage].cs" />
+    <Compile Include="Messages\RequestReceivedArgs.cs" />
+    <Compile Include="Communication\Responder[TMessage].cs" />
+    <Compile Include="Communication\ResponderBase.cs" />
+    <Compile Include="Messages\RowBytesMessage.cs" />
+    <Compile Include="Messages\System\EndSessionMessage.cs" />
+    <Compile Include="Messages\System\HandshakeRequest.cs" />
+    <Compile Include="Messages\System\HandshakeResponse.cs" />
+    <Compile Include="Serialization\CompoundSerializer.cs" />
+    <Compile Include="Serialization\BinaryMessageData.cs" />
+    <Compile Include="Serialization\BinaryMessageReader.cs" />
+    <Compile Include="Serialization\BinaryMessageWriter.cs" />
+    <Compile Include="Messages\IBinaryMessageData.cs" />
+    <Compile Include="Channels\IChannel.cs" />
+    <Compile Include="Channels\IChannelAwaiter.cs" />
+    <Compile Include="Channels\IEndpointData.cs" />
+    <Compile Include="Messages\IMessage.cs" />
+    <Compile Include="Serialization\IMessageSerializer[TMessage].cs" />
+    <Compile Include="Serialization\IMessageSerializer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Messages\StringMessage.cs" />
+    <Compile Include="Serialization\NativeSerializer.cs" />
+    <Compile Include="Serialization\StringMessageSerializer.cs" />
+    <Compile Include="Channels\Tcp\TcpChannel.cs" />
+    <Compile Include="Channels\Tcp\TcpChannelAwaiter.cs" />
+    <Compile Include="Channels\Tcp\TcpEndpointData.cs" />
+    <Compile Include="Channels\Tcp\TcpListenerEx.cs" />
+    <Compile Include="Serialization\System\EndSessionSerializer.cs" />
+    <Compile Include="Serialization\System\HandshakeRequestSerializer.cs" />
+    <Compile Include="Serialization\System\HandshakeResponseSerializer.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
