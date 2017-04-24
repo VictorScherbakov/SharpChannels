@@ -1,4 +1,4 @@
-namespace ConsoleTests
+namespace Examples.Transport
 {
     public enum Transport
     {

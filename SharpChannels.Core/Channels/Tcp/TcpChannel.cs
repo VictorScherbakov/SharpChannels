@@ -56,8 +56,7 @@ namespace SharpChannels.Core.Channels.Tcp
             MaxMessageLength = ChannelSettings.GetDefaultSettings().MaxMessageLength;
         }
 
-        public TcpChannel(TcpEndpointData endpointData, IMessageSerializer serializer, ChannelSettings channelSettings,
-            TcpConnectionSettings connetcionSettings)
+        public TcpChannel(TcpEndpointData endpointData, IMessageSerializer serializer, ChannelSettings channelSettings, TcpConnectionSettings connetcionSettings)
             : this(endpointData, serializer)
         {
             connetcionSettings.SetupClient(_client);

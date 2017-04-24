@@ -20,20 +20,20 @@ namespace SharpChannels.Core.Channels
             var tf = new TaskFactory();
             tf.StartNew(() =>
             {
-                    try
+                try
+                {
+                    while (_awaiter.Active && Active)
                     {
-                        while (_awaiter.Active && Active)
-                        {
-                            var channel = _awaiter.AwaitNewChannel();
-                            if (channel != null)
-                                OnClientAccepted(new ClientAcceptedEventArgs(channel));
-                        }
+                        var channel = _awaiter.AwaitNewChannel();
+                        if (channel != null)
+                            OnClientAccepted(new ClientAcceptedEventArgs(channel));
                     }
-                    finally
-                    {
-                        Active = false;
-                    }
-                }, TaskCreationOptions.LongRunning);
+                }
+                finally
+                {
+                    Active = false;
+                }
+            }, TaskCreationOptions.LongRunning);
         }
 
         public void Stop()
