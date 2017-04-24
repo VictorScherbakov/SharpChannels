@@ -12,25 +12,34 @@ namespace SharpChannels.Core.Communication
         public event EventHandler<MessageEventArgs> MessageReceived;
         public event EventHandler<EventArgs> ChannelClosed;
 
+        public event EventHandler<ExceptionEventArgs> ReceiveMessageFailed;
+
         public bool Active { get; private set; }
 
         public void StartReceiving()
         {
             Task.Run(() =>
             {
-                Active = true;
                 try
                 {
-                    while (Channel.IsOpened && Active)
+                    Active = true;
+                    try
                     {
-                        var message = Channel.Receive();
-                        if (message != null)
-                            OnMessageReceived(new MessageEventArgs(message, Channel));
+                        while (Channel.IsOpened && Active)
+                        {
+                            var message = Channel.Receive();
+                            if (message != null)
+                                OnMessageReceived(new MessageEventArgs(message, Channel));
+                        }
+                    }
+                    finally
+                    {
+                        Active = false;
                     }
                 }
-                finally
+                catch (Exception ex)
                 {
-                    Active = false;
+                    OnReceiveMessageFailed(new ExceptionEventArgs(ex));
                 }
 
                 OnChannelClosed();
@@ -58,6 +67,11 @@ namespace SharpChannels.Core.Communication
         protected virtual void OnChannelClosed()
         {
             ChannelClosed?.Invoke(this, EventArgs.Empty);
+        }
+
+        protected virtual void OnReceiveMessageFailed(ExceptionEventArgs e)
+        {
+            ReceiveMessageFailed?.Invoke(this, e);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace SharpChannels.Core.Channels.Tcp
         protected readonly ChannelSettings ChannelSettings;
         protected readonly TcpConnectionSettings ConnectionSettings;
 
-        protected virtual void OnErrorCreatingChannel(ErrorCreatingChannelEventArgs e)
+        protected virtual void OnErrorCreatingChannel(ExceptionEventArgs e)
         {
             ErrorCreatingChannel?.Invoke(this, e);
         }
@@ -33,7 +33,7 @@ namespace SharpChannels.Core.Channels.Tcp
                 ConnectionSettings ?? TcpConnectionSettings.GetDefault());
         }
 
-        public event EventHandler<ErrorCreatingChannelEventArgs> ErrorCreatingChannel;
+        public event EventHandler<ExceptionEventArgs> ErrorCreatingChannel;
 
         public TcpChannel AwaitNewChannel()
         {
@@ -57,7 +57,7 @@ namespace SharpChannels.Core.Channels.Tcp
                     }
                     catch (Exception ex)
                     {
-                        OnErrorCreatingChannel(new ErrorCreatingChannelEventArgs(ex));
+                        OnErrorCreatingChannel(new ExceptionEventArgs(ex));
                     }
                 }
             }
@@ -83,8 +83,8 @@ namespace SharpChannels.Core.Channels.Tcp
         {
             ThrowIfInactive();
 
-            _listener.Stop();
             _stopEvent.Set();
+            _listener.Stop();
         }
 
         public TcpChannelAwaiter(TcpEndpointData endpointData, IMessageSerializer serializer, ChannelSettings channelSettings = null, TcpConnectionSettings connectionSettings = null)

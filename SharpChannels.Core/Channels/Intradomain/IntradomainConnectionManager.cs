@@ -14,7 +14,7 @@ namespace SharpChannels.Core.Channels.Intradomain
         private readonly Dictionary<string, IntradomainConnetcion> _connections;
         private readonly Dictionary<string, Func<IntradomainSocket, IntradomainSocket>> _listeners;
 
-        private AutoResetEvent _connectionCreated = new AutoResetEvent(false);
+        private readonly AutoResetEvent _connectionCreated = new AutoResetEvent(false);
 
         /// <summary>
         /// Resets Instance. For testing purpose only!

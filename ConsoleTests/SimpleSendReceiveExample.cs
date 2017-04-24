@@ -22,8 +22,14 @@ namespace ConsoleTests
                 a.Channel.Name = "ch" + i.ToString();
 
                 var messageReceiver = new Receiver(a.Channel);
-                messageReceiver.MessageReceived += (s, ar) => { Console.WriteLine(ar.Message); };
-                messageReceiver.ChannelClosed += (s, ar) => { Console.WriteLine($"Channel '{((Receiver)s).Channel.Name}' closed!"); };
+                messageReceiver.MessageReceived += (receiver, ar) => { Console.WriteLine(ar.Message); };
+                messageReceiver.ChannelClosed += (receiver, ar) =>
+                {
+                    var channel = ((Receiver)receiver).Channel;
+                    Console.WriteLine($"Channel '{channel.Name}' closed!");
+                    channel.Dispose();
+                };
+                messageReceiver.ReceiveMessageFailed += (s, ar) => { Console.WriteLine($"Error receiving message:  '{ar.Exception}'"); };
 
                 messageReceiver.StartReceiving();
             };

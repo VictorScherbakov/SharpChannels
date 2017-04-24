@@ -25,7 +25,7 @@ namespace SharpChannels.Core.Channels.Intradomain
 
         protected readonly IntradomainConnectionSettings ConnectionSettings;
 
-        protected virtual void OnErrorCreatingChannel(ErrorCreatingChannelEventArgs e)
+        protected virtual void OnErrorCreatingChannel(ExceptionEventArgs e)
         {
             ErrorCreatingChannel?.Invoke(this, e);
         }
@@ -37,7 +37,7 @@ namespace SharpChannels.Core.Channels.Intradomain
                 : IntradomainChannel.CreateAndOpen(ChannelCreated, ServerSocket, serializer);
         }
 
-        public event EventHandler<ErrorCreatingChannelEventArgs> ErrorCreatingChannel;
+        public event EventHandler<ExceptionEventArgs> ErrorCreatingChannel;
 
         public IntradomainChannel AwaitNewChannel()
         {
@@ -55,7 +55,7 @@ namespace SharpChannels.Core.Channels.Intradomain
                 }
                 catch (Exception ex)
                 {
-                    OnErrorCreatingChannel(new ErrorCreatingChannelEventArgs(ex));
+                    OnErrorCreatingChannel(new ExceptionEventArgs(ex));
                 }
             }
         }

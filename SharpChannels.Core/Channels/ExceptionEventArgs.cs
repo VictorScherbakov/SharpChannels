@@ -2,11 +2,11 @@
 
 namespace SharpChannels.Core.Channels
 {
-    public class ErrorCreatingChannelEventArgs
+    public class ExceptionEventArgs
     {
         public Exception Exception { get; }
 
-        public ErrorCreatingChannelEventArgs(Exception exception)
+        public ExceptionEventArgs(Exception exception)
         {
             Exception = exception;
         }
