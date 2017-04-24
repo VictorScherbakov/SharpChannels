@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D7A9C4DA-46E6-4C24-B7B8-154C44D9FF0B}</ProjectGuid>
+    <ProjectGuid>{A2896F53-CBC5-4C3C-897F-827312724469}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Examples.Serialization</RootNamespace>
-    <AssemblyName>Serialization</AssemblyName>
+    <RootNamespace>Examples.Transport</RootNamespace>
+    <AssemblyName>Transport</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -32,28 +32,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="protobuf-net">
-      <HintPath>..\packages\protobuf-net.2.1.0\lib\net45\protobuf-net.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Message.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Transport.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SharpChannels.Core\SharpChannels.Core.csproj">
+    <ProjectReference Include="..\..\SharpChannels.Core\SharpChannels.Core.csproj">
       <Project>{3A58294D-07FA-4D64-82FD-21F873B4863B}</Project>
       <Name>SharpChannels.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SharpChannels.Protobuf\SharpChannels.Protobuf.csproj">
-      <Project>{BD281FD7-BBF9-401A-BDF4-7C635ACDC2D5}</Project>
-      <Name>SharpChannels.Protobuf</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
