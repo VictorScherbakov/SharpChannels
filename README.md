@@ -34,7 +34,10 @@ Server side:
 
             var server = Scenarios.RequestResponse.SetupServer(serverFactory)
                 .UsingNewClientHandler((sender, a) => { Console.WriteLine("channel opened"); })
-                .UsingRequestHandler((sender, a) => { a.Response = new StringMessage(a.Request.Message.Replace("request", "response")); })
+                .UsingRequestHandler((sender, a) => 
+                        { 
+                                    a.Response = new StringMessage(a.Request.Message.Replace("request", "response")); 
+                        })
                 .UsingChannelClosedHandler((sender, a) => { Console.WriteLine("channel closed"); })
                 .Go();
 
