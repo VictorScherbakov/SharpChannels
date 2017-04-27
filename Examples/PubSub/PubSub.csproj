@@ -43,7 +43,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SharpChannels.Core\SharpChannels.Core.csproj">
+    <ProjectReference Include="..\..\SharpChannels.Core\SharpChannels.Core.csproj">
       <Project>{3A58294D-07FA-4D64-82FD-21F873B4863B}</Project>
       <Name>SharpChannels.Core</Name>
     </ProjectReference>
