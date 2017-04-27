@@ -1,4 +1,5 @@
 using SharpChannels.Core.Channels;
+using SharpChannels.Core.Contracts;
 using SharpChannels.Core.Messages;
 
 namespace SharpChannels.Core.Communication
@@ -18,6 +19,8 @@ namespace SharpChannels.Core.Communication
 
         public Requester(IChannel channel)
         {
+            Enforce.NotNull(channel, nameof(channel));
+
             Channel = channel;
         }
     }

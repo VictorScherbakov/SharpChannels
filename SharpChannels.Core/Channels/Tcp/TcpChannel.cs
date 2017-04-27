@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using SharpChannels.Core.Contracts;
 using SharpChannels.Core.Serialization;
 
 namespace SharpChannels.Core.Channels.Tcp
@@ -22,8 +23,7 @@ namespace SharpChannels.Core.Channels.Tcp
 
         protected override void CloseInternal()
         {
-            if (!IsOpened)
-                throw new InvalidOperationException("Already closed");
+            Enforce.State.FitsTo(IsOpened, "Already closed");
 
             _client.Close();
         }
@@ -32,6 +32,9 @@ namespace SharpChannels.Core.Channels.Tcp
 
         internal TcpChannel(TcpClient client, IMessageSerializer serializer, ChannelSettings channelSettings, TcpConnectionSettings connetcionSettings)
         {
+            Enforce.NotNull(client, nameof(client));
+            Enforce.NotNull(serializer, nameof(serializer));
+
             var ipEndPoint = (IPEndPoint)client.Client.RemoteEndPoint;
             _endpointData = new TcpEndpointData(ipEndPoint.Address, ipEndPoint.Port);
             Serializer = serializer;
@@ -46,6 +49,9 @@ namespace SharpChannels.Core.Channels.Tcp
 
         public TcpChannel(TcpEndpointData endpointData, IMessageSerializer serializer)
         {
+            Enforce.NotNull(endpointData, nameof(endpointData));
+            Enforce.NotNull(serializer, nameof(serializer));
+
             _endpointData = endpointData;
             Serializer = serializer;
             _client = new TcpClient(endpointData.Address.AddressFamily)

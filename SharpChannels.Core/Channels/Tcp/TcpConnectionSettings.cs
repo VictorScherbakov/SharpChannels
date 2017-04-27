@@ -1,5 +1,6 @@
 using System;
 using System.Net.Sockets;
+using SharpChannels.Core.Contracts;
 
 namespace SharpChannels.Core.Channels.Tcp
 {
@@ -23,6 +24,8 @@ namespace SharpChannels.Core.Channels.Tcp
 
         public void SetupClient(TcpClient client)
         {
+            Enforce.NotNull(client, nameof(client));
+
             client.ReceiveBufferSize = ReceiveBufferSize;
             client.SendBufferSize = SendBufferSize;
             client.SendTimeout = (int)SendTimeout.TotalMilliseconds;

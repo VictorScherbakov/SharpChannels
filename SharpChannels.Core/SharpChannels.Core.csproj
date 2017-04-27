@@ -40,6 +40,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Channels\Intradomain\IntradomainChannelFactory.cs" />
+    <Compile Include="Channels\Intradomain\TcpChannelAwaiterFactory.cs" />
+    <Compile Include="Channels\IChannelAwaiterFactory.cs" />
+    <Compile Include="Channels\IChannelFactory.cs" />
     <Compile Include="Channels\IChannel[TMessage].cs" />
     <Compile Include="Channels\Intradomain\IntradomainChannelAwaiterBase.cs" />
     <Compile Include="Channels\Intradomain\IntradomainSocket.cs" />
@@ -69,12 +73,22 @@
     <Compile Include="Channels\Tcp\TcpChannelAwaiter[TMessage].cs" />
     <Compile Include="Channels\Tcp\TcpChannel[TMessage].cs" />
     <Compile Include="Channels\Tcp\TcpConnectionSettings.cs" />
+    <Compile Include="Communication\Publisher[TMessage].cs" />
+    <Compile Include="Communication\Publisher.cs" />
+    <Compile Include="Communication\IPublisher[TMessage].cs" />
+    <Compile Include="Communication\IPublisher.cs" />
+    <Compile Include="Communication\IReceiver.cs" />
     <Compile Include="Communication\IRequester[TMessage].cs" />
     <Compile Include="Communication\IResponder[TMessage].cs" />
     <Compile Include="Communication\Requester[TMessage].cs" />
     <Compile Include="Communication\IRequester.cs" />
     <Compile Include="Communication\IResponder.cs" />
     <Compile Include="Communication\Responder.cs" />
+    <Compile Include="Communication\Scenarios.cs" />
+    <Compile Include="Contracts\Enforce.cs" />
+    <Compile Include="IntradomainCommunicationObjectsFactory.cs" />
+    <Compile Include="TcpCommunicationObjectsFactory.cs" />
+    <Compile Include="ICommunicationObjectsFactory.cs" />
     <Compile Include="Messages\MessageEventArgs.cs" />
     <Compile Include="Communication\Requester.cs" />
     <Compile Include="Messages\MessageType.cs" />

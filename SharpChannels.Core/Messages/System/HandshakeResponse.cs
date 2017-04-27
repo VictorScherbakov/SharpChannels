@@ -1,4 +1,6 @@
-﻿namespace SharpChannels.Core.Messages.System
+﻿using SharpChannels.Core.Contracts;
+
+namespace SharpChannels.Core.Messages.System
 {
     internal class HandshakeResponse : IMessage
     {
@@ -6,6 +8,8 @@
 
         public HandshakeResponse(ushort responseMarker)
         {
+            Enforce.NotNull(responseMarker, nameof(responseMarker));
+
             ResponseMarker = responseMarker;
         }
     }

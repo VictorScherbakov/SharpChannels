@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using SharpChannels.Core.Contracts;
 using SharpChannels.Core.Messages;
 using SharpChannels.Core.Serialization;
 
@@ -16,8 +17,7 @@ namespace SharpChannels.Core.Channels.Intradomain
 
         protected override void CloseInternal()
         {
-            if (!IsOpened)
-                throw new InvalidOperationException("Already closed");
+            Enforce.State.FitsTo(IsOpened, "Already closed");
 
             _connectionManager.Disconnect(_socket);
         }

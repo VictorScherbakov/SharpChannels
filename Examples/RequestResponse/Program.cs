@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net;
-using SharpChannels.Core.Channels;
+using SharpChannels.Core;
 using SharpChannels.Core.Channels.Tcp;
 using SharpChannels.Core.Communication;
 using SharpChannels.Core.Messages;
@@ -10,72 +10,43 @@ namespace Examples.RequestResponse
 {
     class Program
     {
-        private static NewChannelRequestAcceptor _requestAcceptor;
-
-        public static void StartServer()
-        {
-            var awaiter = new TcpChannelAwaiter<StringMessage>( // await tcp connections 
-                    new TcpEndpointData(IPAddress.Any, 2000),   // at port 2000
-                    new StringMessageSerializer());             // using StringMessageSerializer for new channels
-
-            // setup the request acceptor
-            _requestAcceptor = new NewChannelRequestAcceptor(awaiter);
-            _requestAcceptor.ClientAccepted += (sender, a) =>
-            {
-                Console.WriteLine("channel opened");
-
-                var responder = new Responder<StringMessage>((IChannel<StringMessage>)a.Channel);
-                responder.RequestReceived += (o, args) =>
-                {
-                    // form the response message
-                    args.Response = new StringMessage(args.Request.Message.Replace("request", "response"));
-                };
-
-                responder.ChannelClosed += (o, args) =>
-                {
-                    // handle channel closing 
-                    Console.WriteLine("channel closed");
-                    ((Responder<StringMessage>)o).Channel.Dispose();
-                };
-
-                // start response loop for this channel
-                responder.StartResponding();
-            };
-
-            // here the server actually becomes available
-            _requestAcceptor.StartAcceptLoop();
-        }
-        private static void StopServer()
-        {
-            _requestAcceptor.Stop();
-        }
-
         static void Main(string[] args)
         {
-            StartServer();
+            var serializer = new StringMessageSerializer();
 
-            using (var channel = new TcpChannel<StringMessage>(                     // create a new channel
-                                     new TcpEndpointData(IPAddress.Loopback, 2000), // with localhost at port 2000
-                                     new StringMessageSerializer()))                // using StringMessageSerializer
+            var serverFactory = new TcpCommunicationObjectsFactory<StringMessage>(
+                                        new TcpEndpointData(IPAddress.Any, 2000), 
+                                        serializer);
+
+            var server = Scenarios.RequestResponse.SetupServer(serverFactory)
+                .UsingNewClientHandler((sender, a) => { Console.WriteLine("channel opened"); })
+                .UsingRequestHandler((sender, a) => { a.Response = new StringMessage(a.Request.Message.Replace("request", "response")); })
+                .UsingChannelClosedHandler((sender, a) => { Console.WriteLine("channel closed"); })
+                .Go();
+
+            var clientFactory = new TcpCommunicationObjectsFactory<StringMessage>(
+                                        new TcpEndpointData(IPAddress.Loopback, 2000), 
+                                        serializer);
+
+            var r = Scenarios.RequestResponse.Requester(clientFactory);
+
+            using (r.Channel)
             {
-                channel.Open();
-
-                // setup the requester
-                var requester = new Requester<StringMessage>(channel);
+                r.Channel.Open();
 
                 for (int i = 0; i < 100; i++)
                 {
-                    var requestMessage = new StringMessage($"request #{i}"); // prepare the request message
+                    var requestMessage = new StringMessage($"request #{i}");
                     Console.WriteLine(requestMessage);
 
-                    var responseMessage = requester.Request(requestMessage); // and send it
+                    var responseMessage = r.Request(requestMessage);
                     Console.WriteLine(responseMessage);
                 }
 
-                channel.Close();
+                r.Channel.Close();
             }
 
-            StopServer();
+            server.Stop();
 
             Console.ReadKey();
         }

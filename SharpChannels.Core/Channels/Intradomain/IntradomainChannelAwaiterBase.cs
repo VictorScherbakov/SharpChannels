@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using SharpChannels.Core.Contracts;
 using SharpChannels.Core.Serialization;
 
 namespace SharpChannels.Core.Channels.Intradomain
@@ -14,8 +15,7 @@ namespace SharpChannels.Core.Channels.Intradomain
 
         private void ThrowIfInactive()
         {
-            if (!Active)
-                throw new InvalidOperationException("IntradomainChannelAwaiter is inactive");
+            Enforce.State.FitsTo(Active, "IntradomainChannelAwaiter is inactive");
         }
 
         protected readonly ChannelSettings ChannelSettings;
@@ -66,8 +66,7 @@ namespace SharpChannels.Core.Channels.Intradomain
 
         public void Start()
         {
-            if (Active)
-                throw new InvalidOperationException("Already started");
+            Enforce.State.FitsTo(!Active, "Already started");
 
             _connectionManager.Listen(ListeningEndpoint.Hub, client =>
             {
@@ -91,8 +90,8 @@ namespace SharpChannels.Core.Channels.Intradomain
 
         internal IntradomainChannelAwaiterBase(IntradomainEndpoint endpoint, IMessageSerializer serializer, ChannelSettings channelSettings = null, IntradomainConnectionSettings connectionSettings = null)
         {
-            if (endpoint == null) throw new ArgumentNullException(nameof(endpoint));
-            if (serializer == null) throw new ArgumentNullException(nameof(serializer));
+            Enforce.NotNull(endpoint, nameof(endpoint));
+            Enforce.NotNull(serializer, nameof(serializer));
 
             ListeningEndpoint = endpoint;
             _serializer = serializer;

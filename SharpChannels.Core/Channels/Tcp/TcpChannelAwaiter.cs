@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Threading;
+using SharpChannels.Core.Contracts;
 using SharpChannels.Core.Serialization;
 
 namespace SharpChannels.Core.Channels.Tcp
@@ -14,8 +15,7 @@ namespace SharpChannels.Core.Channels.Tcp
 
         private void ThrowIfInactive()
         {
-            if (!Active)
-                throw new InvalidOperationException("TcpChannelAwaiter is inactive");
+            Enforce.State.FitsTo(Active, "TcpChannelAwaiter is inactive");
         }
 
         protected readonly ChannelSettings ChannelSettings;
@@ -73,8 +73,7 @@ namespace SharpChannels.Core.Channels.Tcp
 
         public void Start()
         {
-            if (Active)
-                throw new InvalidOperationException("Already started");
+            Enforce.State.FitsTo(!Active, "Already started");
 
             _listener.Start();
         }
@@ -89,8 +88,8 @@ namespace SharpChannels.Core.Channels.Tcp
 
         public TcpChannelAwaiter(TcpEndpointData endpointData, IMessageSerializer serializer, ChannelSettings channelSettings = null, TcpConnectionSettings connectionSettings = null)
         {
-            if (endpointData == null) throw new ArgumentNullException(nameof(endpointData));
-            if (serializer == null) throw new ArgumentNullException(nameof(serializer));
+            Enforce.NotNull(endpointData, nameof(endpointData));
+            Enforce.NotNull(serializer, nameof(serializer));
 
             ListeningData = endpointData;
             _serializer = serializer;

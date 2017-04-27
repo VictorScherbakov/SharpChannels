@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using SharpChannels.Core.Contracts;
 using SharpChannels.Core.Messages;
 using SharpChannels.Core.Messages.System;
 using SharpChannels.Core.Serialization;
@@ -53,8 +54,7 @@ namespace SharpChannels.Core.Channels
 
         private void ThrowIfHandshaken()
         {
-            if (_isHandShaken)
-                throw new InvalidOperationException("Already handshaken");
+            Enforce.State.FitsTo(!_isHandShaken, "Already handshaken");
         }
 
         public abstract IEndpointData EndpointData { get; }
@@ -63,8 +63,7 @@ namespace SharpChannels.Core.Channels
 
         public virtual void Open()
         {
-            if (IsOpened)
-                throw new InvalidOperationException("Already opened");
+            Enforce.State.FitsTo(!IsOpened, "Already opened");
 
             OpenTransport();
 
@@ -73,8 +72,15 @@ namespace SharpChannels.Core.Channels
 
         public void Close()
         {
-            Send(EndSessionMessage.Instance, new EndSessionSerializer());
-            CloseInternal();
+            try
+            {
+                Send(EndSessionMessage.Instance, new EndSessionSerializer());
+            }
+            catch (DataTransferException ex) when(ex.Code == DataTransferErrorCode.ChannelClosed)
+            { }
+            
+            if(IsOpened)
+                CloseInternal();
         }
 
         public abstract bool IsOpened { get; }
@@ -107,8 +113,7 @@ namespace SharpChannels.Core.Channels
 
         public void Send(IMessage message, IMessageSerializer serializer)
         {
-            if (!IsOpened)
-                throw new InvalidOperationException();
+            Enforce.State.FitsTo(IsOpened, "Fail to send via closed channel");
 
             var binaryMessage = serializer.Serialize(message);
             WriteBinaryMessage(binaryMessage);
@@ -146,8 +151,7 @@ namespace SharpChannels.Core.Channels
 
         public IMessage Receive(IMessageSerializer serializer)
         {
-            if (!IsOpened)
-                throw new InvalidOperationException();
+            Enforce.State.FitsTo(IsOpened, "Failed to receive message using closed channel");
 
             var binaryMessage = ReadBinaryMessage();
 

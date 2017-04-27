@@ -1,5 +1,6 @@
 using System;
 using SharpChannels.Core.Channels;
+using SharpChannels.Core.Contracts;
 using SharpChannels.Core.Messages;
 namespace SharpChannels.Core.Communication
 {
@@ -8,6 +9,8 @@ namespace SharpChannels.Core.Communication
     {
         public Responder(IChannel<TMessage> channel)
         {
+            Enforce.NotNull(channel, nameof(channel));
+
             _channel = channel;
         }
 

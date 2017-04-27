@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using SharpChannels.Core.Contracts;
 
 namespace SharpChannels.Core.Channels
 {
@@ -9,8 +10,7 @@ namespace SharpChannels.Core.Channels
 
         public void StartAcceptLoop()
         {
-            if(Active)
-                throw new InvalidOperationException();
+            Enforce.State.FitsTo(!Active, "Already started");
 
             Active = true;
 
@@ -38,8 +38,7 @@ namespace SharpChannels.Core.Channels
 
         public void Stop()
         {
-            if (!Active)
-                throw new InvalidOperationException();
+            Enforce.State.FitsTo(Active, "Already stopped");
 
             Active = false;
             if(_awaiter.Active)

@@ -1,4 +1,6 @@
-﻿namespace SharpChannels.Core.Messages.System
+﻿using SharpChannels.Core.Contracts;
+
+namespace SharpChannels.Core.Messages.System
 {
     internal class HandshakeRequest : IMessage
     {
@@ -11,6 +13,8 @@
 
         public HandshakeRequest(ushort requestMarker)
         {
+            Enforce.NotNull(requestMarker, nameof(requestMarker));
+
             RequestMarker = requestMarker;
         }
     }

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
+using SharpChannels.Core.Contracts;
 
 namespace SharpChannels.Core.Channels.Intradomain
 {
     internal class IntradomainConnetcion
     {
-        private readonly IntradomainConnectionSettings _settings;
         private readonly IntradomainStream _serverStream;
         private readonly IntradomainStream _clientStream;
 
@@ -48,21 +48,19 @@ namespace SharpChannels.Core.Channels.Intradomain
 
         public IntradomainConnetcion(IntradomainSocket server, IntradomainSocket client, IntradomainConnectionSettings settings)
         {
-            _settings = settings;
-            if (server == null) throw new ArgumentNullException(nameof(server));
-            if (client == null) throw new ArgumentNullException(nameof(client));
+            Enforce.NotNull(server, nameof(server));
+            Enforce.NotNull(client, nameof(client));
+            Enforce.NotNull(settings, nameof(settings));
 
-            if(server.Type != SocketType.Server) throw new ArgumentException(nameof(server));
-            if(client.Type != SocketType.Client) throw new ArgumentException(nameof(client));
-
-            if(client.ConnectionId != server.ConnectionId)
-                throw new ArgumentException("Client and server sockets should have the same name", nameof(client));
+            Enforce.IsTrue(server.Type == SocketType.Server, nameof(server));
+            Enforce.IsTrue(client.Type == SocketType.Client, nameof(client));
+            Enforce.IsTrue(client.ConnectionId == server.ConnectionId, "Client and server sockets should have the same ConnectionId", nameof(client));
 
             ServerSocket = server;
             ClientSocket = client;
 
-            _serverStream = new IntradomainStream(_settings.ReceiveTimeout);
-            _clientStream = new IntradomainStream(_settings.ReceiveTimeout);
+            _serverStream = new IntradomainStream(settings.ReceiveTimeout);
+            _clientStream = new IntradomainStream(settings.ReceiveTimeout);
 
             _serverStream.Partner = _clientStream;
             _clientStream.Partner = _serverStream;

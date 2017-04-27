@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 using SharpChannels.Core.Channels;
+using SharpChannels.Core.Contracts;
 using SharpChannels.Core.Messages;
 
 namespace SharpChannels.Core.Communication
 {
-    public class Receiver
+    public class Receiver : IReceiver
     {
         public IChannel Channel { get; }
 
@@ -56,6 +57,8 @@ namespace SharpChannels.Core.Communication
 
         public Receiver(IChannel channel)
         {
+            Enforce.NotNull(channel, nameof(channel));
+
             Channel = channel;
         }
 

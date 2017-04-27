@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using SharpChannels.Core.Contracts;
 using SharpChannels.Core.Messages;
 
 namespace SharpChannels.Core.Serialization
@@ -15,12 +16,9 @@ namespace SharpChannels.Core.Serialization
 
         public IBinaryMessageData Serialize(IMessage message)
         {
-            var stringMessage = message as StringMessage;
+            Enforce.Is<StringMessage>(message, nameof(message));
 
-            if (stringMessage == null)
-                throw new ArgumentException("Should be StringMessage", nameof(message));
-
-            return Serialize(stringMessage);
+            return Serialize((StringMessage)message);
         }
 
         public IBinaryMessageData Serialize(StringMessage message)

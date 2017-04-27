@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SharpChannels.Core.Contracts;
 using SharpChannels.Core.Messages;
 
 namespace SharpChannels.Core.Serialization
@@ -57,7 +58,7 @@ namespace SharpChannels.Core.Serialization
             var types = new HashSet<Type>(serializers.Select(s => s.Type));
             var codes = new HashSet<ushort>(serializers.Select(s => s.Code));
 
-            if (!types.All(t => (typeof(IMessage).IsAssignableFrom(t))))
+            if (!types.All(t => typeof(IMessage).IsAssignableFrom(t)))
                 return false;
 
             return serializers.Count == types.Count && serializers.Count == codes.Count;
@@ -65,8 +66,7 @@ namespace SharpChannels.Core.Serialization
 
         public CompoundSerializer(IList<SerializerInfo> serializers)
         {
-            if(!CheckSerializers(serializers))
-                throw new ArgumentException("Serializers should have different codes and types, all types should be derived from IMessage", nameof(serializers));
+            Enforce.IsTrue(CheckSerializers(serializers), "Serializers should have different codes and types, all types should be derived from IMessage", nameof(serializers));
 
             foreach (var serializerInfo in serializers)
             {

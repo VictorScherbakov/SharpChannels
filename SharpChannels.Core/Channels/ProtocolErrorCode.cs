@@ -1,5 +1,3 @@
-using System;
-
 namespace SharpChannels.Core.Channels
 {
     public enum ProtocolErrorCode

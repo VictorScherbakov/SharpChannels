@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SharpChannels.Core.Messages.System
+﻿namespace SharpChannels.Core.Messages.System
 {
     internal class EndSessionMessage : IMessage
     {
