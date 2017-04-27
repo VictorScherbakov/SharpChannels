@@ -26,57 +26,41 @@ Simple and lightweight communication library for .NET. It allows to implement me
 
 Server side:
 ```c#
-        var awaiter = new TcpChannelAwaiter<StringMessage>( // await tcp connections 
-                new TcpEndpointData(IPAddress.Any, 2000),   // at port 2000
-                new StringMessageSerializer());             // using StringMessageSerializer for new channels
+            var serializer = new StringMessageSerializer();
 
-        // setup the request acceptor
-        var requestAcceptor = new NewChannelRequestAcceptor(awaiter);
-        requestAcceptor.ClientAccepted += (sender, a) =>
-        {
-            Console.WriteLine("channel opened");
+            var serverFactory = new TcpCommunicationObjectsFactory<StringMessage>(
+                                        new TcpEndpointData(IPAddress.Any, 2000), 
+                                        serializer);
 
-            var responder = new Responder<StringMessage>((IChannel<StringMessage>)a.Channel);
-            responder.RequestReceived += (o, args) =>
-            {
-                // form the response message
-                args.Response = new StringMessage(args.Request.Message.Replace("request from", "response to"));
-            };
-
-            responder.ChannelClosed += (o, args) =>
-            {
-                // handle channel closing 
-                Console.WriteLine("channel closed");
-            };
-
-            // start response loop for this channel
-            responder.StartResponding();
-        };
-
-        // here the server actually becomes available
-        requestAcceptor.StartAcceptLoop();
+            var server = Scenarios.RequestResponse.SetupServer(serverFactory)
+                .UsingNewClientHandler((sender, a) => { Console.WriteLine("channel opened"); })
+                .UsingRequestHandler((sender, a) => { a.Response = new StringMessage(a.Request.Message.Replace("request", "response")); })
+                .UsingChannelClosedHandler((sender, a) => { Console.WriteLine("channel closed"); })
+                .Go();
 
 ```
 
 Client side:
 ```c#
-          using (var channel = 
-              new TcpChannel<StringMessage>(                     // create a new channel
-                  new TcpEndpointData(IPAddress.Loopback, 2000), // with localhost at port 2000
-                  new StringMessageSerializer()))                // using StringMessageSerializer
-          {
-              channel.Open();
+            var clientFactory = new TcpCommunicationObjectsFactory<StringMessage>(
+                                        new TcpEndpointData(IPAddress.Loopback, 2000), 
+                                        serializer);
 
-              // setup the requester
-              var requester = new Requester<StringMessage>(channel);
+            var r = Scenarios.RequestResponse.Requester(clientFactory);
 
-              for (int i = 0; i < 100; i++)
-              {
-                  var requestMessage = new StringMessage("request from client"); // prepare the request message
-                  var responseMessage = requester.Request(requestMessage);       // and send it
-                  Console.WriteLine(responseMessage);
-              }
+            using (r.Channel)
+            {
+                r.Channel.Open();
 
-              channel.Close();
-          }
+                for (int i = 0; i < 100; i++)
+                {
+                    var requestMessage = new StringMessage($"request #{i}");
+                    Console.WriteLine(requestMessage);
+
+                    var responseMessage = r.Request(requestMessage);
+                    Console.WriteLine(responseMessage);
+                }
+
+                r.Channel.Close();
+            }
 ```
