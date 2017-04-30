@@ -26,6 +26,14 @@ namespace SharpChannels.Core.Contracts
         }
 
         [DebuggerNonUserCode]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void Positive(int value, string argumentName)
+        {
+            if (value <= 0)
+                throw new ArgumentOutOfRangeException($"Argument '{argumentName}' should be positive", argumentName);
+        }
+
+        [DebuggerNonUserCode]
         public static void IsTrue(Func<bool> predicate, string argumentName)
         {
             if(!predicate())

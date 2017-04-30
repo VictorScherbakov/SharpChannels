@@ -20,7 +20,7 @@ namespace SharpChannels.Core.Channels
 
         protected int MaxMessageLength { get; set; }
 
-        protected IMessageSerializer Serializer;
+        public IMessageSerializer Serializer { get; protected set; }
 
         protected void RequestHandshake()
         {

@@ -51,7 +51,7 @@ namespace Examples.Serialization
                 .Go();
 
 
-            var clientFactory = new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Loopback, 2000), serializer);
+            var clientFactory = new TcpCommunicationObjectsFactory<Message>(new TcpEndpointData(IPAddress.Loopback, 2000), serializer);
 
             var r = Scenarios.RequestResponse.Requester(clientFactory);
 

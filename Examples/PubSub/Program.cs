@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Threading;
 using SharpChannels.Core;
 using SharpChannels.Core.Channels.Tcp;
 using SharpChannels.Core.Communication;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Threading.Tasks;
 using SharpChannels.Core.Channels;
 using SharpChannels.Core.Contracts;
 using SharpChannels.Core.Messages;
@@ -33,16 +33,61 @@ namespace SharpChannels.Core.Communication
             }
         }
 
+        private void RemoveClosedChannels()
+        {
+            _channels.RemoveAll(channel => !channel.IsOpened);
+        }
+
         public int SubscriberCount => _channels.Count(channel => channel.IsOpened);
 
         public bool Active { get; private set; }
 
         public void Broadcast(IMessage message)
         {
-            _channels.RemoveAll(channel => !channel.IsOpened);
+            Enforce.NotNull(message, nameof(message));
+
+            RemoveClosedChannels();
 
             foreach (var channel in _channels.Where(channel => channel.IsOpened))
                 SafeSend(channel, message);
+        }
+
+        public void ParallelBroadcast(IMessage message, int parallelismDegree)
+        {
+            Enforce.NotNull(message, nameof(message));
+            Enforce.Positive(parallelismDegree, nameof(parallelismDegree));
+
+            RemoveClosedChannels();
+
+            var options = new ParallelOptions {MaxDegreeOfParallelism = parallelismDegree};
+            Parallel.ForEach(_channels.Where(channel => channel.IsOpened), options, channel => SafeSend(channel, message));
+        }
+
+        public async Task ParallelBroadcastAsync(IMessage message, int parallelismDegree)
+        {
+            Enforce.NotNull(message, nameof(message));
+            Enforce.Positive(parallelismDegree, nameof(parallelismDegree));
+
+            RemoveClosedChannels();
+
+            await Task.Run(() =>
+            {
+                var options = new ParallelOptions {MaxDegreeOfParallelism = parallelismDegree};
+                Parallel.ForEach(_channels.Where(channel => channel.IsOpened), options, channel => SafeSend(channel, message));
+            });
+        }
+
+        public async Task BroadcastAsync(IMessage message)
+        {
+            Enforce.NotNull(message, nameof(message));
+
+            RemoveClosedChannels();
+
+            await Task.Run(() =>
+            {
+                foreach (var channel in _channels.Where(channel => channel.IsOpened))
+                    SafeSend(channel, message);
+            });
         }
 
         public void Close()

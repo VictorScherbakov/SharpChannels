@@ -1,12 +1,19 @@
-﻿using SharpChannels.Core.Messages;
+﻿using System.Threading.Tasks;
+using SharpChannels.Core.Messages;
 
 namespace SharpChannels.Core.Communication
 {
     public interface IPublisher
     {
         bool Active { get; }
-        void Broadcast(IMessage message);
         void Close();
+
         int SubscriberCount { get; }
+
+        void Broadcast(IMessage message);
+        void ParallelBroadcast(IMessage message, int parallelismDegree);
+
+        Task BroadcastAsync(IMessage message);
+        Task ParallelBroadcastAsync(IMessage message, int parallelismDegree);
     }
 }
