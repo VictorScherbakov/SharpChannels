@@ -78,6 +78,7 @@ namespace SharpChannels.Core.Channels.Tcp
                 {
                     ((IDisposable) _client).Dispose();
                     _client = null;
+                    base.Dispose(true);
                 }
             }
         }

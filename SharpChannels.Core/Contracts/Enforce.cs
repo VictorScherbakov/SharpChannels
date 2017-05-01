@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace SharpChannels.Core.Contracts
 {
-    public static class Enforce
+    internal static class Enforce
     {
         [DebuggerNonUserCode]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -61,6 +61,14 @@ namespace SharpChannels.Core.Contracts
         {
             if (!(value is T))
                 throw new ArgumentException($"Argument {argumentName} should be instance of {typeof(T).FullName}", argumentName);
+        }
+
+        [DebuggerNonUserCode]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void NotDisposed(object obj, bool isDisposedFlag)
+        {
+            if(isDisposedFlag)
+                throw new ObjectDisposedException(obj.GetType().FullName);
         }
 
         [DebuggerNonUserCode]

@@ -1,9 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using SharpChannels.Core.Messages;
 
 namespace SharpChannels.Core.Communication
 {
-    public interface IPublisher<in TMessage>
+    public interface IPublisher<in TMessage> : IDisposable
         where TMessage : IMessage
     {
         bool Active { get; }

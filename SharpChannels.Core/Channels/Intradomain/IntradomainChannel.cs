@@ -35,7 +35,6 @@ namespace SharpChannels.Core.Channels.Intradomain
 
         public override bool IsOpened => _connectionManager.Connected(_socket);
 
-
         ~IntradomainChannel()
         {
             Dispose(false);
@@ -46,7 +45,10 @@ namespace SharpChannels.Core.Channels.Intradomain
             if (!disposing) return;
 
             if (IsOpened)
+            {
                 _connectionManager.Disconnect(_socket);
+               base.Dispose(true);
+            }
         }
 
         internal IntradomainChannel(IntradomainSocket socket, IMessageSerializer serializer)

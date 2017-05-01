@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Net;
-using System.Threading;
 using SharpChannels.Core;
 using SharpChannels.Core.Channels.Tcp;
 using SharpChannels.Core.Communication;
@@ -23,18 +22,17 @@ namespace Examples.PubSub
             var serializer = new StringMessageSerializer();
 
             var serverFactory = new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Any, 2000), serializer);
-            var publisher = Scenarios.PubSub.Publisher(serverFactory);
+            using (var publisher = Scenarios.PubSub.Publisher(serverFactory))
+            {
+                var clientFactory = new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Loopback, 2000), serializer);
+                Subscribe(clientFactory, "client1");
+                Subscribe(clientFactory, "client2");
+                Subscribe(clientFactory, "client3");
 
-            var clientFactory = new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Loopback, 2000), serializer);
-            Subscribe(clientFactory, "client1");
-            Subscribe(clientFactory, "client2");
-            Subscribe(clientFactory, "client3");
-
-            publisher.Broadcast(new StringMessage("broadcast message 1"));
-            publisher.Broadcast(new StringMessage("broadcast message 2"));
-            publisher.Broadcast(new StringMessage("broadcast message 3"));
-
-            publisher.Close();
+                publisher.Broadcast(new StringMessage("broadcast message 1"));
+                publisher.Broadcast(new StringMessage("broadcast message 2"));
+                publisher.Broadcast(new StringMessage("broadcast message 3"));
+            }
 
             Console.ReadKey();
         }

@@ -14,6 +14,7 @@ namespace SharpChannels.Core.Channels
         private readonly object _writeLock = new object();
 
         private bool _isHandShaken;
+        private bool _isDisposed;
 
         protected abstract void CloseInternal();
         protected abstract Stream Stream { get; }
@@ -63,6 +64,7 @@ namespace SharpChannels.Core.Channels
 
         public virtual void Open()
         {
+            Enforce.NotDisposed(this, _isDisposed);
             Enforce.State.FitsTo(!IsOpened, "Already opened");
 
             OpenTransport();
@@ -72,6 +74,7 @@ namespace SharpChannels.Core.Channels
 
         public void Close()
         {
+            Enforce.NotDisposed(this, _isDisposed);
             try
             {
                 Send(EndSessionMessage.Instance, new EndSessionSerializer());
@@ -113,6 +116,7 @@ namespace SharpChannels.Core.Channels
 
         public void Send(IMessage message, IMessageSerializer serializer)
         {
+            Enforce.NotDisposed(this, _isDisposed);
             Enforce.State.FitsTo(IsOpened, "Fail to send via closed channel");
 
             var binaryMessage = serializer.Serialize(message);
@@ -151,6 +155,7 @@ namespace SharpChannels.Core.Channels
 
         public IMessage Receive(IMessageSerializer serializer)
         {
+            Enforce.NotDisposed(this, _isDisposed);
             Enforce.State.FitsTo(IsOpened, "Failed to receive message using closed channel");
 
             var binaryMessage = ReadBinaryMessage();
@@ -191,10 +196,13 @@ namespace SharpChannels.Core.Channels
 
         protected virtual void Dispose(bool disposing)
         {
+            _isDisposed = true;
         }
 
         public void Dispose()
         {
+            if(_isDisposed) return;
+
             Dispose(true);
             GC.SuppressFinalize(this);
         }
