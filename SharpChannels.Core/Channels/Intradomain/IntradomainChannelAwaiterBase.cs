@@ -7,6 +7,7 @@ namespace SharpChannels.Core.Channels.Intradomain
 {
     public class IntradomainChannelAwaiterBase : IChannelAwaiter<IntradomainChannel>
     {
+        private readonly object _locker = new object();
         private readonly IMessageSerializer _serializer;
 
         private readonly AutoResetEvent _stopEvent = new AutoResetEvent(false);
@@ -70,13 +71,16 @@ namespace SharpChannels.Core.Channels.Intradomain
 
             _connectionManager.Listen(ListeningEndpoint.Hub, client =>
             {
-                ServerSocket = IntradomainSocket.ServerSocket(client.Hub, client.ConnectionId);
+                lock (_locker) // clients shouldn't retrieve server sockets in parallel
+                {
+                    ServerSocket = IntradomainSocket.ServerSocket(client.Hub, client.ConnectionId);
 
-                _clientAccepted.Set();
+                    _clientAccepted.Set();
 
-                return ChannelCreated.WaitOne(ConnectionSettings?.ConnectTimeout ?? TimeSpan.FromMilliseconds(1000)) 
-                    ? ServerSocket
-                    : null;
+                    return ChannelCreated.WaitOne(ConnectionSettings?.ConnectTimeout ?? TimeSpan.FromMilliseconds(1000))
+                        ? ServerSocket
+                        : null;
+                }
             });
         }
 

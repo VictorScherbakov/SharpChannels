@@ -72,7 +72,8 @@ namespace SharpChannels.Core.Channels.Intradomain
 
         private void Reset()
         {
-            Stream = new MemoryStream();
+            Stream.Position = 0;
+            Stream.SetLength(0);
             WritePosition = 0;
         }
 

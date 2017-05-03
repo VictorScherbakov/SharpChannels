@@ -26,14 +26,14 @@ namespace SharpChannels.Core.Communication
 
         public void StartResponding()
         {
-            Task.Run(() =>
+            Task.Factory.StartNew(() =>
             {
                 while (_channel.IsOpened)
                 {
                     Response();
                 }
                 OnChannelClosed();
-            });
+            }, TaskCreationOptions.LongRunning);
         }
 
         protected abstract IMessage OnRequestReceived(IMessage request);

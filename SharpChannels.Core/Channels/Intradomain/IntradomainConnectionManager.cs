@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using SharpChannels.Core.Contracts;
 
 namespace SharpChannels.Core.Channels.Intradomain
 {
@@ -62,8 +63,7 @@ namespace SharpChannels.Core.Channels.Intradomain
 
         public bool Listen(string name, Func<IntradomainSocket, IntradomainSocket> acceptClient)
         {
-            if (acceptClient == null)
-                throw new ArgumentNullException(nameof(acceptClient));
+            Enforce.NotNull(acceptClient, nameof(acceptClient));
 
             if (string.IsNullOrEmpty(name))
                 return false;
@@ -127,8 +127,7 @@ namespace SharpChannels.Core.Channels.Intradomain
             if (string.IsNullOrEmpty(socket.ConnectionId))
                 return;
 
-            if(socket.Type == SocketType.Listener)
-                throw new ArgumentException(nameof(socket));
+            Enforce.IsTrue(socket.Type != SocketType.Listener, nameof(socket));
 
             lock (_locker)
             {
@@ -153,8 +152,7 @@ namespace SharpChannels.Core.Channels.Intradomain
             if (string.IsNullOrEmpty(socket.ConnectionId))
                 return false;
 
-            if (socket.Type == SocketType.Listener)
-                throw new ArgumentException(nameof(socket));
+            Enforce.IsTrue(socket.Type != SocketType.Listener, nameof(socket));
 
             lock (_locker)
             {
