@@ -1,4 +1,4 @@
-# SharpChannels
+# SharpChannels [![Build status](https://ci.appveyor.com/api/projects/status/923senof89ihceqy?svg=true)](https://ci.appveyor.com/project/VictorScherbakov/sharpchannels)
 Simple and lightweight communication library for .NET. It allows to implement message based communications in your apps.
 
 #### Transports
