@@ -1,4 +1,4 @@
-namespace Payload
+namespace Examples.Payload
 {
     public enum Transport
     {

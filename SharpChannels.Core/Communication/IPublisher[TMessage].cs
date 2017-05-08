@@ -17,6 +17,5 @@ namespace SharpChannels.Core.Communication
 
         Task BroadcastAsync(TMessage message);
         Task ParallelBroadcastAsync(TMessage message, int parallelismDegree);
-        
     }
 }

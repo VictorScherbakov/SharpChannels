@@ -1,16 +1,16 @@
 using System;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using SharpChannels.Core;
+using SharpChannels.Core.Channels;
+using SharpChannels.Core.Channels.Intradomain;
 using SharpChannels.Core.Channels.Tcp;
 using SharpChannels.Core.Communication;
 using SharpChannels.Core.Messages;
 using SharpChannels.Core.Serialization;
-using System.Threading;
-using System.Threading.Tasks;
-using SharpChannels.Core.Channels;
-using SharpChannels.Core.Channels.Intradomain;
 
-namespace Payload
+namespace Examples.Payload
 {
     public class PubSubPayload
     {

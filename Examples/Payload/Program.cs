@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Payload
+namespace Examples.Payload
 {
     class Program
     {

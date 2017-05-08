@@ -12,7 +12,7 @@ using SharpChannels.Core.Communication;
 using SharpChannels.Core.Messages;
 using SharpChannels.Core.Serialization;
 
-namespace Payload
+namespace Examples.Payload
 {
     public class RequestResponsePayload
     {
