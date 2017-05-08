@@ -29,8 +29,8 @@ namespace SharpChannels.Core.Channels.Tcp
         protected virtual TcpChannel CreateChannel(TcpClient client, IMessageSerializer serializer)
         {
             return new TcpChannel(client, serializer, 
-                ChannelSettings ?? ChannelSettings.GetDefaultSettings(), 
-                ConnectionSettings ?? TcpConnectionSettings.GetDefault());
+                ChannelSettings ?? ChannelSettings.GetDefault(), 
+                ConnectionSettings ?? TcpConnectionSettingsBuilder.GetDefaultSettings());
         }
 
         public event EventHandler<ExceptionEventArgs> ErrorCreatingChannel;

@@ -59,7 +59,7 @@ namespace SharpChannels.Core.Channels.Tcp
                 NoDelay = true
             };
 
-            MaxMessageLength = ChannelSettings.GetDefaultSettings().MaxMessageLength;
+            MaxMessageLength = ChannelSettings.GetDefault().MaxMessageLength;
         }
 
         public TcpChannel(TcpEndpointData endpointData, IMessageSerializer serializer, ChannelSettings channelSettings, TcpConnectionSettings connetcionSettings)

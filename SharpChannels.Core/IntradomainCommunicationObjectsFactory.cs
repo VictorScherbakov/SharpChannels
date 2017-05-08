@@ -25,7 +25,7 @@ namespace SharpChannels.Core
         }
 
         public IntradomainCommunicationObjectsFactory(IntradomainEndpoint endpoint, IMessageSerializer serializer)
-            : this(endpoint, serializer, ChannelSettings.GetDefaultSettings(), IntradomainConnectionSettings.GetDefault())
+            : this(endpoint, serializer, ChannelSettings.GetDefault(), IntradomainConnectionSettingsBuilder.GetDefaultSettings())
         {
         }
 

@@ -82,7 +82,7 @@ namespace SharpChannels.Core.Channels.Intradomain
         {
             var result = new IntradomainChannel(socket, serializer, channelSettings, connectionSettings);
 
-            FinishConnection(result, channelCreatedEvent, socket, connectionSettings?.ConnectTimeout ?? IntradomainConnectionSettings.GetDefault().ConnectTimeout);
+            FinishConnection(result, channelCreatedEvent, socket, connectionSettings?.ConnectTimeout ?? IntradomainConnectionSettingsBuilder.GetDefaultSettings().ConnectTimeout);
             return result;
         }
 
@@ -91,22 +91,22 @@ namespace SharpChannels.Core.Channels.Intradomain
         {
             var result = new IntradomainChannel<TMessage>(socket, serializer, channelSettings, connectionSettings);
 
-            FinishConnection(result, channelCreatedEvent, socket, connectionSettings?.ConnectTimeout ?? IntradomainConnectionSettings.GetDefault().ConnectTimeout);
+            FinishConnection(result, channelCreatedEvent, socket, connectionSettings?.ConnectTimeout ?? IntradomainConnectionSettingsBuilder.GetDefaultSettings().ConnectTimeout);
             return result;
         }
 
         public IntradomainChannel(IntradomainEndpoint endpoint, IMessageSerializer serializer, ChannelSettings channelSettings = null, IntradomainConnectionSettings connectionSettings = null)
             : this(endpoint, SocketType.Client, serializer)
         {
-            _connectionSettings = connectionSettings ?? IntradomainConnectionSettings.GetDefault();
-            MaxMessageLength = channelSettings?.MaxMessageLength ?? ChannelSettings.GetDefaultSettings().MaxMessageLength;
+            _connectionSettings = connectionSettings ?? IntradomainConnectionSettingsBuilder.GetDefaultSettings();
+            MaxMessageLength = channelSettings?.MaxMessageLength ?? ChannelSettings.GetDefault().MaxMessageLength;
         }
 
         internal IntradomainChannel(IntradomainSocket socket, IMessageSerializer serializer, ChannelSettings channelSettings = null, IntradomainConnectionSettings connectionSettings = null)
             : this(socket, serializer)
         {
-            _connectionSettings = connectionSettings ?? IntradomainConnectionSettings.GetDefault();
-            MaxMessageLength = channelSettings?.MaxMessageLength ?? ChannelSettings.GetDefaultSettings().MaxMessageLength;
+            _connectionSettings = connectionSettings ?? IntradomainConnectionSettingsBuilder.GetDefaultSettings();
+            MaxMessageLength = channelSettings?.MaxMessageLength ?? ChannelSettings.GetDefault().MaxMessageLength;
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Tests.Channels.Intradomain
         public void SuccessfulyStart()
         {
             var serverEndpoint = new IntradomainEndpoint("1");
-            var awaiter = new IntradomainChannelAwaiter(serverEndpoint, new StringMessageSerializer(), ChannelSettings.GetDefaultSettings());
+            var awaiter = new IntradomainChannelAwaiter(serverEndpoint, new StringMessageSerializer(), ChannelSettings.GetDefault());
             awaiter.Start();
 
             Assert.That(awaiter.Active);
@@ -27,7 +27,7 @@ namespace Tests.Channels.Intradomain
         public void SuccessfulyStop()
         {
             var serverEndpoint = new IntradomainEndpoint("1");
-            var awaiter = new IntradomainChannelAwaiter(serverEndpoint, new StringMessageSerializer(), ChannelSettings.GetDefaultSettings());
+            var awaiter = new IntradomainChannelAwaiter(serverEndpoint, new StringMessageSerializer(), ChannelSettings.GetDefault());
             awaiter.Start();
             awaiter.Stop();
 

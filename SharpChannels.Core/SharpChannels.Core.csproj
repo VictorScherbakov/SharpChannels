@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Channels\Intradomain\IntradomainChannelFactory.cs" />
+    <Compile Include="Channels\Intradomain\IntradomainConnectionSettingsBuilder.cs" />
     <Compile Include="Channels\Intradomain\TcpChannelAwaiterFactory.cs" />
     <Compile Include="Channels\IChannelAwaiterFactory.cs" />
     <Compile Include="Channels\IChannelFactory.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Channels\Tcp\TcpChannelAwaiter[TMessage].cs" />
     <Compile Include="Channels\Tcp\TcpChannel[TMessage].cs" />
     <Compile Include="Channels\Tcp\TcpConnectionSettings.cs" />
+    <Compile Include="Channels\Tcp\TcpConnectionSettingsBuilder.cs" />
     <Compile Include="Communication\Publisher[TMessage].cs" />
     <Compile Include="Communication\Publisher.cs" />
     <Compile Include="Communication\IPublisher[TMessage].cs" />

@@ -19,7 +19,7 @@ namespace Tests.Channels.Intradomain
         public void SuccessfulyOpen()
         {
             var listenterEndpoint = new IntradomainEndpoint("1"); 
-            var awaiter = new IntradomainChannelAwaiter(listenterEndpoint, new StringMessageSerializer(), ChannelSettings.GetDefaultSettings());
+            var awaiter = new IntradomainChannelAwaiter(listenterEndpoint, new StringMessageSerializer(), ChannelSettings.GetDefault());
             awaiter.Start();
 
             var task = Task.Run(() => { awaiter.AwaitNewChannel(); });
@@ -36,7 +36,7 @@ namespace Tests.Channels.Intradomain
         public void SuccessfulyTransmitMessage()
         {
             var listenterEndpoint = new IntradomainEndpoint("1"); 
-            var awaiter = new IntradomainChannelAwaiter(listenterEndpoint, new StringMessageSerializer(), ChannelSettings.GetDefaultSettings());
+            var awaiter = new IntradomainChannelAwaiter(listenterEndpoint, new StringMessageSerializer(), ChannelSettings.GetDefault());
             awaiter.Start();
 
             IChannel server = null;

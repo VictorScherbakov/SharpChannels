@@ -111,7 +111,9 @@ namespace SharpChannels.Core.Channels.Intradomain
 
             lock (_locker)
             {
-                var connection = new IntradomainConnetcion(remoteSocket, socket, connectionSettings ?? IntradomainConnectionSettings.GetDefault())
+                var connection = new IntradomainConnetcion(remoteSocket, 
+                                                           socket, 
+                                                           connectionSettings ?? IntradomainConnectionSettingsBuilder.GetDefaultSettings())
                 {
                     ClientSocketState = IntradomainSocketState.Connected
                 };

@@ -25,7 +25,7 @@ namespace SharpChannels.Core
         }
 
         public TcpCommunicationObjectsFactory(TcpEndpointData endpointData, IMessageSerializer serializer)
-            : this(endpointData, serializer, ChannelSettings.GetDefaultSettings(), TcpConnectionSettings.GetDefault())
+            : this(endpointData, serializer, ChannelSettings.GetDefault(), TcpConnectionSettingsBuilder.GetDefaultSettings())
         {
         }
 

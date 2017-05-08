@@ -9,7 +9,10 @@ namespace SharpChannels.Core.Channels.Tcp
     {
         protected override TcpChannel CreateChannel(TcpClient client, IMessageSerializer serializer)
         {
-            return new TcpChannel<TMessage>(client, serializer, ChannelSettings ?? ChannelSettings.GetDefaultSettings(), ConnectionSettings ?? TcpConnectionSettings.GetDefault());
+            return new TcpChannel<TMessage>(client, 
+                                            serializer, 
+                                            ChannelSettings ?? ChannelSettings.GetDefault(), 
+                                            ConnectionSettings ?? TcpConnectionSettingsBuilder.GetDefaultSettings());
         }
 
         TcpChannel<TMessage> IChannelAwaiter<TcpChannel<TMessage>>.AwaitNewChannel()
@@ -17,7 +20,10 @@ namespace SharpChannels.Core.Channels.Tcp
             return (TcpChannel<TMessage>)AwaitNewChannel();
         }
 
-        public TcpChannelAwaiter(TcpEndpointData endpointData, IMessageSerializer serializer, ChannelSettings channelSettings = null, TcpConnectionSettings connectionSettings = null)
+        public TcpChannelAwaiter(TcpEndpointData endpointData, 
+                                 IMessageSerializer serializer, 
+                                 ChannelSettings channelSettings = null, 
+                                 TcpConnectionSettings connectionSettings = null)
             : base(endpointData, serializer, channelSettings, connectionSettings)
         {
         }

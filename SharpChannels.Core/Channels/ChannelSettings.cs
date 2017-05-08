@@ -4,7 +4,7 @@
     {
         public int MaxMessageLength { get; set; }
 
-        public static ChannelSettings GetDefaultSettings()
+        public static ChannelSettings GetDefault()
         {
             return new ChannelSettings { MaxMessageLength = 65536 };
         }

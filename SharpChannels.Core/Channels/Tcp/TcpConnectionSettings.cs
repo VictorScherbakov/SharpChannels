@@ -11,17 +11,6 @@ namespace SharpChannels.Core.Channels.Tcp
         public TimeSpan SendTimeout { get; set; }
         public TimeSpan ReceiveTimeout { get; set; }
 
-        public static TcpConnectionSettings GetDefault()
-        {
-            return new TcpConnectionSettings
-            {
-                SendTimeout = TimeSpan.FromMilliseconds(1000),
-                ReceiveTimeout = TimeSpan.FromMilliseconds(1000),
-                SendBufferSize = 8192,
-                ReceiveBufferSize = 8192
-            };
-        }
-
         public void SetupClient(TcpClient client)
         {
             Enforce.NotNull(client, nameof(client));

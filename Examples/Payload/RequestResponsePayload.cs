@@ -26,33 +26,60 @@ namespace Payload
 
         private NewChannelRequestAcceptor StartTcpServer()
         {
+            var connectionSettings = new TcpConnectionSettingsBuilder()
+                                        .UsingSendTimeout(TimeSpan.FromHours(1))
+                                        .UsingReceiveTimeout(TimeSpan.FromHours(1))
+                                        .Build();
+
             var factory = new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Any, 2000),
-                                                                            new StringMessageSerializer());
+                                                                            new StringMessageSerializer(),
+                                                                            ChannelSettings.GetDefault(),
+                                                                            connectionSettings);
 
             return StartServer(factory);
         }
 
         private NewChannelRequestAcceptor StartIntradomainServer()
         {
+            var connectionSettings = new IntradomainConnectionSettingsBuilder()
+                                        .UsingSendTimeout(TimeSpan.FromHours(1))
+                                        .UsingReceiveTimeout(TimeSpan.FromHours(1))
+                                        .Build();
 
             var factory = new IntradomainCommunicationObjectsFactory<StringMessage>(new IntradomainEndpoint("payload"),
-                                                                                    new StringMessageSerializer());
+                                                                                    new StringMessageSerializer(),
+                                                                                    ChannelSettings.GetDefault(), 
+                                                                                    connectionSettings);
 
             return StartServer(factory);
         }
 
         private IRequester GetTcpRequester()
         {
+            var connectionSettings = new TcpConnectionSettingsBuilder()
+                                        .UsingSendTimeout(TimeSpan.FromHours(1))
+                                        .UsingReceiveTimeout(TimeSpan.FromHours(1))
+                                        .Build();
+
             var clientFactory = new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Loopback, 2000),
-                new StringMessageSerializer());
+                                                                                  new StringMessageSerializer(),
+                                                                                  ChannelSettings.GetDefault(), 
+                                                                                  connectionSettings);
 
             return Scenarios.RequestResponse.Requester(clientFactory);
         }
 
         private IRequester GetIntradomainRequester()
         {
+            var connectionSettings = new IntradomainConnectionSettingsBuilder()
+                                        .UsingSendTimeout(TimeSpan.FromHours(1))
+                                        .UsingReceiveTimeout(TimeSpan.FromHours(1))
+                                        .Build();
+
             var clientFactory = new IntradomainCommunicationObjectsFactory<StringMessage>(new IntradomainEndpoint("payload"),
-                new StringMessageSerializer());
+                                                                                          new StringMessageSerializer(),
+                                                                                          ChannelSettings.GetDefault(),
+                                                                                          connectionSettings);
 
             return Scenarios.RequestResponse.Requester(clientFactory);
         }
