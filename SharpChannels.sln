@@ -21,7 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PubSub", "Examples\PubSub\P
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Payload", "Examples\Payload\Payload.csproj", "{F766B268-6A78-4703-BF1A-B33F75DC13D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chat", "Chat\Chat.csproj", "{B2C3730B-93CF-4C81-AF32-D80E353A542A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chat", "Examples\Chat\Chat.csproj", "{B2C3730B-93CF-4C81-AF32-D80E353A542A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
