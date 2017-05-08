@@ -19,7 +19,7 @@ namespace SharpChannels.Core.Communication
 
         public void StartReceiving()
         {
-            Task.Run(() =>
+            Task.Factory.StartNew(() =>
             {
                 try
                 {
@@ -44,7 +44,7 @@ namespace SharpChannels.Core.Communication
                 }
 
                 OnChannelClosed();
-            });
+            }, TaskCreationOptions.LongRunning);
         }
 
         public void Stop()
