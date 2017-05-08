@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+    <metadata>
+        <id>SharpChannels</id>
+        <version>1.0.0-alpha</version>
+        <title>SharpChannels</title>
+        <authors>Victor Scherbakov</authors>
+        <licenseUrl>https://github.com/VictorScherbakov/SharpChannels/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/VictorScherbakov/SharpChannels</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Simple and lightweight communication library for .NET. It allows to implement message based communications in your apps.</description>
+        <tags>communications tcp inproc messaging</tags>
+        <frameworkAssemblies>
+        </frameworkAssemblies>
+    </metadata>
+    <files>
+        <file src="SharpChannels.Core\bin\Release\SharpChannels.Core.dll" target="lib\net45\DataTanker.Core.dll" />
+    </files>
+</package>
