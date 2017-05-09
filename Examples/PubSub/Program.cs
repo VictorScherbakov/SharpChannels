@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using SharpChannels.Core;
+using SharpChannels.Core.Channels;
 using SharpChannels.Core.Channels.Tcp;
 using SharpChannels.Core.Communication;
 using SharpChannels.Core.Messages;
@@ -10,9 +11,9 @@ namespace Examples.PubSub
 {
     class Program
     {
-        private static void Subscribe(ICommunicationObjectsFactory<StringMessage> factory, string clientName)
+        private static IChannel<StringMessage> Subscribe(ICommunicationObjectsFactory<StringMessage> factory, string clientName)
         {
-            Scenarios.PubSub.SetupSubscription(factory)
+            return Scenarios.PubSub.SetupSubscription(factory)
                     .UsingMessageReceivedHandler((sender, a) => { Console.WriteLine($"{clientName} received message: {a.Message}"); })
                     .Go();
         }
@@ -25,13 +26,15 @@ namespace Examples.PubSub
             using (var publisher = Scenarios.PubSub.Publisher(serverFactory))
             {
                 var clientFactory = new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Loopback, 2000), serializer);
-                Subscribe(clientFactory, "client1");
-                Subscribe(clientFactory, "client2");
-                Subscribe(clientFactory, "client3");
 
-                publisher.Broadcast(new StringMessage("broadcast message 1"));
-                publisher.Broadcast(new StringMessage("broadcast message 2"));
-                publisher.Broadcast(new StringMessage("broadcast message 3"));
+                using (Subscribe(clientFactory, "client1"))
+                using (Subscribe(clientFactory, "client2"))
+                using (Subscribe(clientFactory, "client3"))
+                {
+                    publisher.Broadcast(new StringMessage("broadcast message 1"));
+                    publisher.Broadcast(new StringMessage("broadcast message 2"));
+                    publisher.Broadcast(new StringMessage("broadcast message 3"));
+                }
             }
 
             Console.ReadKey();

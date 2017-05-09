@@ -149,7 +149,7 @@ namespace SharpChannels.Core.Communication
                     return this;
                 }
 
-                public void Go()
+                public IChannel<TMessage> Go()
                 {
                     _setupFinished = true;
 
@@ -173,6 +173,8 @@ namespace SharpChannels.Core.Communication
 
                     channel.Open();
                     receiver.StartReceiving();
+
+                    return channel;
                 }
             }
         }

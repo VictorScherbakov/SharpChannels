@@ -35,7 +35,7 @@ namespace Examples.Chat
             }
             catch (SocketException ex) when (ex.ErrorCode == 10048)
             {
-                // someone have already got running listener on localhost:2000
+                // someone has already got running listener on localhost:2000
                 return null;
             }
         }
