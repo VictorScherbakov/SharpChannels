@@ -27,13 +27,17 @@ namespace Examples.PubSub
             {
                 var clientFactory = new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Loopback, 2000), serializer);
 
-                using (Subscribe(clientFactory, "client1"))
-                using (Subscribe(clientFactory, "client2"))
-                using (Subscribe(clientFactory, "client3"))
+                using (var subscription1 = Subscribe(clientFactory, "client1"))
+                using (var subscription2 = Subscribe(clientFactory, "client2"))
+                using (var subscription3 = Subscribe(clientFactory, "client3"))
                 {
                     publisher.Broadcast(new StringMessage("broadcast message 1"));
                     publisher.Broadcast(new StringMessage("broadcast message 2"));
                     publisher.Broadcast(new StringMessage("broadcast message 3"));
+
+                    subscription3.Close();
+                    subscription2.Close();
+                    subscription1.Close();
                 }
             }
 
