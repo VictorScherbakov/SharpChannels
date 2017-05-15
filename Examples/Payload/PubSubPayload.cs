@@ -77,7 +77,7 @@ namespace Examples.Payload
                 ? GetTcpSubscriberFactory()
                 : GetIntradomainSubscriberFactory();
 
-            Scenarios.PubSub.SetupSubscription(factory)
+            Scenarios.PubSub.SetupSubscription(factory, new []{"topic"})
                 .UsingMessageReceivedHandler((sender, a) =>
                 {
                     Interlocked.Increment(ref _messagesReceived);
@@ -93,7 +93,7 @@ namespace Examples.Payload
 
         private void Broadcast(IPublisher<StringMessage> publisher, StringMessage message)
         {
-            publisher.Broadcast(message);
+            publisher.Broadcast("topic", message);
         }
 
         private string GetLogString(int subscriberNumber, int messagesBroadcasted)

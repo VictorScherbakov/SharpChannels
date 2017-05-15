@@ -177,8 +177,7 @@ namespace SharpChannels.Core.Channels
                     case MessageType.HandshakeRequest:
                     case MessageType.HandshakeResponse:
                         if (_isHandShaken)
-                            throw new ProtocolException("Unexpected message type",
-                                ProtocolErrorCode.UnexpectedMessageType);
+                            throw new ProtocolException("Unexpected message type", ProtocolErrorCode.UnexpectedMessageType);
 
                         return serializer.Deserialize(binaryMessage);
                     default:

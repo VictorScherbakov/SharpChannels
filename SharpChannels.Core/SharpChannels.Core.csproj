@@ -71,6 +71,7 @@
     <Compile Include="Channels\ProtocolException.cs" />
     <Compile Include="Channels\ChannelSettings.cs" />
     <Compile Include="Channels\ExceptionEventArgs.cs" />
+    <Compile Include="Channels\PubSubChannel.cs" />
     <Compile Include="Channels\Tcp\TcpChannelAwaiter[TMessage].cs" />
     <Compile Include="Channels\Tcp\TcpChannel[TMessage].cs" />
     <Compile Include="Channels\Tcp\TcpConnectionSettings.cs" />
@@ -89,6 +90,8 @@
     <Compile Include="Communication\Scenarios.cs" />
     <Compile Include="Contracts\Enforce.cs" />
     <Compile Include="IntradomainCommunicationObjectsFactory.cs" />
+    <Compile Include="Messages\PubSub\SubscribeMessage.cs" />
+    <Compile Include="Serialization\PubSub\SubscribeMessageSerializer.cs" />
     <Compile Include="TcpCommunicationObjectsFactory.cs" />
     <Compile Include="ICommunicationObjectsFactory.cs" />
     <Compile Include="Messages\MessageEventArgs.cs" />

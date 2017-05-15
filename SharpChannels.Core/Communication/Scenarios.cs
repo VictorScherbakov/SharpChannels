@@ -1,7 +1,11 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using SharpChannels.Core.Channels;
 using SharpChannels.Core.Contracts;
 using SharpChannels.Core.Messages;
+using SharpChannels.Core.Messages.PubSub;
+using SharpChannels.Core.Serialization.PubSub;
 
 namespace SharpChannels.Core.Communication
 {
@@ -102,27 +106,29 @@ namespace SharpChannels.Core.Communication
                 return publisher;
             }
 
-            public static SubscriptionSetup<TMessage> SetupSubscription<TMessage>(ICommunicationObjectsFactory<TMessage> factory)
+            public static SubscriptionSetup<TMessage> SetupSubscription<TMessage>(ICommunicationObjectsFactory<TMessage> factory, IEnumerable<string> topics)
                 where TMessage : IMessage
             {
                 Enforce.NotNull(factory, nameof(factory));
 
-                return new SubscriptionSetup<TMessage>(factory);
+                return new SubscriptionSetup<TMessage>(factory, topics);
             }
 
             public class SubscriptionSetup<TMessage>
                 where TMessage : IMessage
             {
                 private readonly ICommunicationObjectsFactory<TMessage> _factory;
+                private readonly IEnumerable<string> _topics;
                 private EventHandler<MessageEventArgs> _messageReceivedHandler;
                 private EventHandler<EventArgs> _channelClosedHandler;
                 private EventHandler<ExceptionEventArgs> _receiveMessageFailedHandler;
                 private bool _setupFinished;
                 private readonly string _setupFinishedDescription = "'Using...' methods should be called before 'Go'";
 
-                internal SubscriptionSetup(ICommunicationObjectsFactory<TMessage> factory)
+                internal SubscriptionSetup(ICommunicationObjectsFactory<TMessage> factory, IEnumerable<string> topics)
                 {
                     _factory = factory;
+                    _topics = topics;
                 }
 
                 public SubscriptionSetup<TMessage> UsingMessageReceivedHandler(EventHandler<MessageEventArgs> messageReceivedHandler)
@@ -173,6 +179,8 @@ namespace SharpChannels.Core.Communication
 
                     channel.Open();
                     receiver.StartReceiving();
+
+                    channel.Send(new SubscribeMessage(_topics), new SubscribeMessageSerializer());
 
                     return channel;
                 }

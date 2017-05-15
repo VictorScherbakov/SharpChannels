@@ -10,12 +10,12 @@ namespace SharpChannels.Core.Communication
         bool Active { get; }
         void Close();
 
-        int SubscriberCount { get; }
+        int SubscriprionNumber { get; }
 
-        void Broadcast(TMessage message);
-        void ParallelBroadcast(TMessage message, int parallelismDegree);
+        void Broadcast(string topic, TMessage message);
+        void ParallelBroadcast(string topic, TMessage message, int parallelismDegree);
 
-        Task BroadcastAsync(TMessage message);
-        Task ParallelBroadcastAsync(TMessage message, int parallelismDegree);
+        Task BroadcastAsync(string topic, TMessage message);
+        Task ParallelBroadcastAsync(string topic, TMessage message, int parallelismDegree);
     }
 }

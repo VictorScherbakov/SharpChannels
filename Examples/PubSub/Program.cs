@@ -13,7 +13,7 @@ namespace Examples.PubSub
     {
         private static IChannel<StringMessage> Subscribe(ICommunicationObjectsFactory<StringMessage> factory, string clientName)
         {
-            return Scenarios.PubSub.SetupSubscription(factory)
+            return Scenarios.PubSub.SetupSubscription(factory, new []{ "topic" })
                     .UsingMessageReceivedHandler((sender, a) => { Console.WriteLine($"{clientName} received message: {a.Message}"); })
                     .Go();
         }
@@ -31,9 +31,9 @@ namespace Examples.PubSub
                 using (var subscription2 = Subscribe(clientFactory, "client2"))
                 using (var subscription3 = Subscribe(clientFactory, "client3"))
                 {
-                    publisher.Broadcast(new StringMessage("broadcast message 1"));
-                    publisher.Broadcast(new StringMessage("broadcast message 2"));
-                    publisher.Broadcast(new StringMessage("broadcast message 3"));
+                    publisher.Broadcast("topic", new StringMessage("broadcast message 1"));
+                    publisher.Broadcast("topic", new StringMessage("broadcast message 2"));
+                    publisher.Broadcast("topic", new StringMessage("broadcast message 3"));
 
                     subscription3.Close();
                     subscription2.Close();

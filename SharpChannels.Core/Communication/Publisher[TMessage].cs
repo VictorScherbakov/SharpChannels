@@ -12,24 +12,24 @@ namespace SharpChannels.Core.Communication
         {
         }
 
-        public void Broadcast(TMessage message)
+        public void Broadcast(string topic, TMessage message)
         {
-            base.Broadcast(message);
+            base.Broadcast(topic, message);
         }
 
-        public void ParallelBroadcast(TMessage message, int parallelismDegree)
+        public void ParallelBroadcast(string topic, TMessage message, int parallelismDegree)
         {
-            base.ParallelBroadcast(message, parallelismDegree);
+            base.ParallelBroadcast(topic, message, parallelismDegree);
         }
 
-        public async Task BroadcastAsync(TMessage message)
+        public async Task BroadcastAsync(string topic, TMessage message)
         {
-            await base.BroadcastAsync(message);
+            await base.BroadcastAsync(topic, message);
         }
 
-        public async Task ParallelBroadcastAsync(TMessage message, int parallelismDegree)
+        public async Task ParallelBroadcastAsync(string topic, TMessage message, int parallelismDegree)
         {
-            await base.ParallelBroadcastAsync(message, parallelismDegree);
+            await base.ParallelBroadcastAsync(topic, message, parallelismDegree);
         }
     }
 }

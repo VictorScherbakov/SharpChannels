@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
 using SharpChannels.Core.Messages.System;
 using SharpChannels.Core.Serialization.System;
 
