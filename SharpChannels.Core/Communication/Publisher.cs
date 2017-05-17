@@ -15,15 +15,9 @@ namespace SharpChannels.Core.Communication
     {
         private readonly INewChannelRequestAcceptor _newChannelRequestAcceptor;
         private readonly bool _stopAcceptorOnClose;
-        private readonly List<SubscriptionRecord> _subscriptions = new List<SubscriptionRecord>();
+        private readonly Dictionary<string, List<IChannel>> _subscriptions = new Dictionary<string, List<IChannel>>(); 
 
         private bool _isDisposed;
-
-        private class SubscriptionRecord
-        {
-            public IChannel Channel { get; set; }
-            public string[] Topics { get; set; }
-        }
 
         private readonly object _locker = new object();
         private readonly SubscribeMessageSerializer _subscribeMessageSerializer;
@@ -49,7 +43,10 @@ namespace SharpChannels.Core.Communication
 
         private void RemoveClosedChannels()
         {
-            _subscriptions.RemoveAll(subscription => !subscription.Channel.IsOpened);
+            foreach (var key in _subscriptions.Keys)
+            {
+                _subscriptions[key].RemoveAll(channel => !channel.IsOpened);
+            }
         }
 
         public int SubscriprionNumber
@@ -58,7 +55,7 @@ namespace SharpChannels.Core.Communication
             {
                 lock (_locker)
                 {
-                    return _subscriptions.Count(subscription => subscription.Channel.IsOpened);
+                    return _subscriptions.Keys.Sum(key => _subscriptions[key].Count(channel => channel.IsOpened));
                 }
             }
         }
@@ -70,8 +67,7 @@ namespace SharpChannels.Core.Communication
             lock (_locker)
             {
                 RemoveClosedChannels();
-                return _subscriptions.Where(subscription => subscription.Channel.IsOpened)
-                                     .Select(subscription => subscription.Channel).ToArray();
+                return _subscriptions.Keys.SelectMany(key => _subscriptions[key]).ToArray();
             }
         }
 
@@ -80,8 +76,10 @@ namespace SharpChannels.Core.Communication
             lock (_locker)
             {
                 RemoveClosedChannels();
-                return _subscriptions.Where(subscription => subscription.Topics.Contains(topic))
-                                     .Select(subscription => subscription.Channel).ToArray();
+
+                return !_subscriptions.ContainsKey(topic) 
+                    ? new IChannel[] {} 
+                    : _subscriptions[topic].ToArray();
             }
         }
 
@@ -171,18 +169,24 @@ namespace SharpChannels.Core.Communication
 
         private void ClientAccepted(object sender, ClientAcceptedEventArgs args)
         {
-            lock (_locker)
+            Task.Run(() =>
             {
-                Task.Run(() =>
+                var subscription = (SubscribeMessage)args.Channel.Receive(_subscribeMessageSerializer);
+                lock (_locker)
                 {
-                    var subscription = (SubscribeMessage)args.Channel.Receive(_subscribeMessageSerializer);
-                    _subscriptions.Add(new SubscriptionRecord
+                    foreach (var topic in subscription.Topics)
                     {
-                        Channel =  args.Channel,
-                        Topics = subscription.Topics
-                    });
-                });
-            }
+                        EnsureListExists(topic);
+                        _subscriptions[topic].Add(args.Channel);
+                    }
+                }
+            });
+        }
+
+        private void EnsureListExists(string topic)
+        {
+            if(!_subscriptions.ContainsKey(topic))
+                _subscriptions.Add(topic, new List<IChannel>());
         }
 
         public Publisher(INewChannelRequestAcceptor newChannelRequestAcceptor, bool stopAcceptorOnClose)
