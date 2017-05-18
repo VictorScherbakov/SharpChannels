@@ -88,6 +88,7 @@
     <Compile Include="Communication\IResponder.cs" />
     <Compile Include="Communication\Responder.cs" />
     <Compile Include="Communication\Scenarios.cs" />
+    <Compile Include="Communication\SubscriptionManager.cs" />
     <Compile Include="Contracts\Enforce.cs" />
     <Compile Include="IntradomainCommunicationObjectsFactory.cs" />
     <Compile Include="Messages\PubSub\SubscribeMessage.cs" />
