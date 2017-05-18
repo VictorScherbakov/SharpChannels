@@ -56,6 +56,7 @@
     <Compile Include="Channels\Intradomain\IntradomainChannelShould.cs" />
     <Compile Include="Channels\Intradomain\IntradomainConnectionManagerShould.cs" />
     <Compile Include="Communication\RequesterShould.cs" />
+    <Compile Include="Communication\SubscriptionManagerShould.cs" />
     <Compile Include="Serialization\CompoundSerializerShould.cs" />
     <Compile Include="Serialization\EndsessionSerializerShould.cs" />
     <Compile Include="Serialization\HandshakeRequestSerializerShould.cs" />
