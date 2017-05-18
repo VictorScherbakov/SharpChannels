@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 using SharpChannels.Core.Channels;
@@ -15,12 +13,11 @@ namespace SharpChannels.Core.Communication
     {
         private readonly INewChannelRequestAcceptor _newChannelRequestAcceptor;
         private readonly bool _stopAcceptorOnClose;
-        private readonly Dictionary<string, List<IChannel>> _subscriptions = new Dictionary<string, List<IChannel>>(); 
 
         private bool _isDisposed;
 
-        private readonly object _locker = new object();
         private readonly SubscribeMessageSerializer _subscribeMessageSerializer;
+        private readonly SubscriptionManager _subscriptionManager;
 
         private static void SafeSend(IChannel channel, IMessage message)
         {
@@ -41,54 +38,16 @@ namespace SharpChannels.Core.Communication
             }
         }
 
-        private void RemoveClosedChannels()
-        {
-            foreach (var key in _subscriptions.Keys)
-            {
-                _subscriptions[key].RemoveAll(channel => !channel.IsOpened);
-            }
-        }
-
-        public int SubscriprionNumber
-        {
-            get
-            {
-                lock (_locker)
-                {
-                    return _subscriptions.Keys.Sum(key => _subscriptions[key].Count(channel => channel.IsOpened));
-                }
-            }
-        }
+        public int SubscriprionNumber => _subscriptionManager.SubscriprionNumber;
 
         public bool Active { get; private set; }
-
-        private IChannel[] GetOpenChannels()
-        {
-            lock (_locker)
-            {
-                RemoveClosedChannels();
-                return _subscriptions.Keys.SelectMany(key => _subscriptions[key]).ToArray();
-            }
-        }
-
-        private IChannel[] GetChannelsByTopic(string topic)
-        {
-            lock (_locker)
-            {
-                RemoveClosedChannels();
-
-                return !_subscriptions.ContainsKey(topic) 
-                    ? new IChannel[] {} 
-                    : _subscriptions[topic].ToArray();
-            }
-        }
 
         public void Broadcast(string topic, IMessage message)
         {
             Enforce.NotNull(message, nameof(message));
             Enforce.NotDisposed(this, _isDisposed);
 
-            foreach (var channel in GetChannelsByTopic(topic))
+            foreach (var channel in _subscriptionManager.GetChannelsByTopic(topic))
                 SafeSend(channel, message);
         }
 
@@ -98,7 +57,7 @@ namespace SharpChannels.Core.Communication
             Enforce.Positive(parallelismDegree, nameof(parallelismDegree));
             Enforce.NotDisposed(this, _isDisposed);
 
-            var openChannels = GetChannelsByTopic(topic);
+            var openChannels = _subscriptionManager.GetChannelsByTopic(topic);
 
             var options = new ParallelOptions {MaxDegreeOfParallelism = parallelismDegree};
             Parallel.ForEach(openChannels, options, channel => SafeSend(channel, message));
@@ -110,7 +69,7 @@ namespace SharpChannels.Core.Communication
             Enforce.Positive(parallelismDegree, nameof(parallelismDegree));
             Enforce.NotDisposed(this, _isDisposed);
 
-            var openChannels = GetChannelsByTopic(topic);
+            var openChannels = _subscriptionManager.GetChannelsByTopic(topic);
 
             await Task.Run(() =>
             {
@@ -124,7 +83,7 @@ namespace SharpChannels.Core.Communication
             Enforce.NotNull(message, nameof(message));
             Enforce.NotDisposed(this, _isDisposed);
 
-            var openChannels = GetChannelsByTopic(topic);
+            var openChannels = _subscriptionManager.GetChannelsByTopic(topic);
 
             await Task.Run(() =>
             {
@@ -143,7 +102,7 @@ namespace SharpChannels.Core.Communication
                 if (_stopAcceptorOnClose && _newChannelRequestAcceptor.Active)
                     _newChannelRequestAcceptor.Stop();
 
-                foreach (var channel in GetOpenChannels())
+                foreach (var channel in _subscriptionManager.GetOpenChannels())
                     channel.Close();
             }
             finally
@@ -172,21 +131,8 @@ namespace SharpChannels.Core.Communication
             Task.Run(() =>
             {
                 var subscription = (SubscribeMessage)args.Channel.Receive(_subscribeMessageSerializer);
-                lock (_locker)
-                {
-                    foreach (var topic in subscription.Topics)
-                    {
-                        EnsureListExists(topic);
-                        _subscriptions[topic].Add(args.Channel);
-                    }
-                }
+                _subscriptionManager.AddSubscription(args.Channel, subscription.Topics);
             });
-        }
-
-        private void EnsureListExists(string topic)
-        {
-            if(!_subscriptions.ContainsKey(topic))
-                _subscriptions.Add(topic, new List<IChannel>());
         }
 
         public Publisher(INewChannelRequestAcceptor newChannelRequestAcceptor, bool stopAcceptorOnClose)
@@ -197,6 +143,8 @@ namespace SharpChannels.Core.Communication
 
             _newChannelRequestAcceptor = newChannelRequestAcceptor;
             _stopAcceptorOnClose = stopAcceptorOnClose;
+
+            _subscriptionManager = new SubscriptionManager();
 
             _newChannelRequestAcceptor.ClientAccepted += ClientAccepted;
 
