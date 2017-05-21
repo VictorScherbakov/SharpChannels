@@ -7,7 +7,7 @@ SharpChannels is a simple and lightweight communication library for .NET.
 ### What
 
 Two things:
-1. Gives you the higher level entities to use in messaging instead of the byte streams and sockets. 
+1. Gives you the higher level entities to use for messaging instead of the byte streams and sockets.  
 Namely: channels and messages
 2. Implements well-known messaging scenarios
 - request-response
