@@ -4,7 +4,7 @@
 
 SharpChannels is a simple and lightweight communication library for .NET.
 
-### What
+### What?
 
 Two things:
 1. Gives you the higher level entities to use for messaging instead of the byte streams and sockets.  
@@ -86,3 +86,7 @@ using (r.Channel)
     r.Channel.Close();
 }
 ```
+### License
+
+SharpChannels is licensed under [The MIT License](https://opensource.org/licenses/MIT)  
+See [LICENSE](LICENSE) for details.
