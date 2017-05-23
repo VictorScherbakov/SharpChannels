@@ -1,6 +1,6 @@
 # ![SharpChannels](logo.png "SharpChannels") 
 
-[![Build status](https://ci.appveyor.com/api/projects/status/923senof89ihceqy?svg=true)](https://ci.appveyor.com/project/VictorScherbakov/sharpchannels)
+[![Build status](https://ci.appveyor.com/api/projects/status/923senof89ihceqy?svg=true)](https://ci.appveyor.com/project/VictorScherbakov/sharpchannels) [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/VictorScherbakov/SharpChannels/blob/master/LICENSE)
 
 SharpChannels is a simple and lightweight communication library for .NET.
 
