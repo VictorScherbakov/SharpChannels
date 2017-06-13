@@ -9,9 +9,9 @@ namespace SharpChannels.Core.Channels.Intradomain
 {
     internal class IntradomainConnectionManager
     {
-        private static IntradomainConnectionManager _instance;
-
+        private static readonly Lazy<IntradomainConnectionManager> _lazy = new Lazy<IntradomainConnectionManager>(() => new IntradomainConnectionManager());
         private static readonly object _locker = new object();
+
         private readonly Dictionary<string, IntradomainConnetcion> _connections;
         private readonly Dictionary<string, Func<IntradomainSocket, IntradomainSocket>> _listeners;
 
@@ -22,25 +22,11 @@ namespace SharpChannels.Core.Channels.Intradomain
         /// </summary>
         internal static void Reset()
         {
-            _instance = null;
+            Instance._connections.Clear();
+            Instance._listeners.Clear();
         }
 
-        public static IntradomainConnectionManager Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    lock (_locker)
-                    {
-                        if (_instance == null)
-                            _instance = new IntradomainConnectionManager();
-                    }
-                }
-
-                return _instance;
-            }
-        }
+        public static IntradomainConnectionManager Instance => _lazy.Value;
 
         public string[] Listeners
         {

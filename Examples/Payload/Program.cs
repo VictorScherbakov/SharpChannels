@@ -4,7 +4,7 @@ namespace Examples.Payload
 {
     class Program
     {
-        private static object _locker = new object();
+        private static readonly object _locker = new object();
 
         private static void Log(string str)
         {
