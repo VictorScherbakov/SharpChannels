@@ -1,19 +1,18 @@
-﻿using System.IO;
-using SharpChannels.Core.Channels;
+﻿using System;
+using System.IO;
 using SharpChannels.Core.Messages;
 
 namespace SharpChannels.Core.Serialization
 {
     internal class BinaryMessageReader
     {
-        public static IBinaryMessageData Read(Stream stream, int maxLength)
+        public static IBinaryMessageData Read(Stream stream, Action<int> checkMessageLength)
         {
             var br = new BinaryReader(stream);
 
             var type = br.ReadUInt16();
             var length = br.ReadInt32();
-            if(length > maxLength)
-                throw new ProtocolException($"Message is too long. Allowed {maxLength} bytes but {length} found", ProtocolErrorCode.MessageTooLong);
+            checkMessageLength?.Invoke(length);
 
             var buffer = br.ReadBytes(length);
 

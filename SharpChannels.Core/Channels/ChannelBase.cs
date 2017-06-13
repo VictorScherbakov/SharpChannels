@@ -135,13 +135,19 @@ namespace SharpChannels.Core.Channels
                     DataTransferErrorCode.ChannelClosed, ex);
         }
 
+        private void CheckMessageLength(int length)
+        {
+            if(length > MaxMessageLength)
+                throw new ProtocolException($"Message is too long. Allowed {MaxMessageLength} bytes but {length} found", ProtocolErrorCode.MessageTooLong);
+        }
+
         private IBinaryMessageData ReadBinaryMessage()
         {
             try
             {
                 lock (_readLock)
                 {
-                    return BinaryMessageReader.Read(Stream, MaxMessageLength);
+                    return BinaryMessageReader.Read(Stream, CheckMessageLength);
                 }
             }
             catch (IOException ex)
