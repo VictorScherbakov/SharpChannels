@@ -4,6 +4,7 @@ using NUnit.Framework;
 
 namespace Tests.Channels.Intradomain
 {
+    [TestFixture]
     class IntradomainConnectionManagerShould
     {
         [SetUp]
