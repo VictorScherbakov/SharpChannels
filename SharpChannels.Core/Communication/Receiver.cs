@@ -30,7 +30,7 @@ namespace SharpChannels.Core.Communication
                         {
                             var message = Channel.Receive();
                             if (message != null)
-                                OnMessageReceived(new MessageEventArgs(message, Channel));
+                                OnMessageReceived(new MessageEventArgs(message));
                         }
                     }
                     finally
