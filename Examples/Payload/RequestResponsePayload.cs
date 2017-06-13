@@ -120,12 +120,14 @@ namespace Examples.Payload
             var task = Task.WhenAll(tasks.ToArray());
             var sw = new Stopwatch();
             sw.Start();
-            while (!task.IsCompleted)
+            while (true)
             {
                 var requestsPerSeconds = requestCount / sw.Elapsed.TotalSeconds;
                 log?.Invoke($"Tasks running:{tasksStarted} Requests per second:{requestsPerSeconds}");
-                Thread.Sleep(40);
+
+                if (task.Wait(40)) break;
             }
+
 
             server.Stop();
         }

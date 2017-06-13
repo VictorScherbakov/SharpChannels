@@ -127,11 +127,12 @@ namespace Examples.Payload
                     }
                 }, TaskCreationOptions.LongRunning);
 
-                while (!task.IsCompleted)
+                while (true)
                 {
                     log(GetLogString(subscriberNumber, messagesBroadcasted));
-                    Thread.Sleep(40);
+                    if(task.Wait(40)) break;
                 }
+
             }
 
             // wait until all subscribers finish their receiving loops
