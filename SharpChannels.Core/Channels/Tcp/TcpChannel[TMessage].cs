@@ -1,5 +1,6 @@
 ﻿using System.Net.Sockets;
 using SharpChannels.Core.Messages;
+using SharpChannels.Core.Security;
 using SharpChannels.Core.Serialization;
 
 namespace SharpChannels.Core.Channels.Tcp
@@ -17,8 +18,12 @@ namespace SharpChannels.Core.Channels.Tcp
             return (TMessage)Receive();
         }
 
-        internal TcpChannel(TcpClient client, IMessageSerializer serializer, ChannelSettings channelSettings, TcpConnectionSettings connetcionSettings) 
-            : base(client, serializer, channelSettings, connetcionSettings)
+        internal TcpChannel(TcpClient client, 
+                            IMessageSerializer serializer, 
+                            ChannelSettings channelSettings, 
+                            TcpConnectionSettings connetcionSettings,
+                            ISecurityWrapper serverSecurityWrapper) 
+            : base(client, serializer, channelSettings, connetcionSettings, serverSecurityWrapper)
         {
         }
 
@@ -27,8 +32,12 @@ namespace SharpChannels.Core.Channels.Tcp
         {
         }
 
-        public TcpChannel(TcpEndpointData endpointData, IMessageSerializer serializer, ChannelSettings channelSettings, TcpConnectionSettings connetcionSettings) 
-            : base(endpointData, serializer, channelSettings, connetcionSettings)
+        public TcpChannel(TcpEndpointData endpointData, 
+                          IMessageSerializer serializer, 
+                          ChannelSettings channelSettings, 
+                          TcpConnectionSettings connetcionSettings,
+                          ISecurityWrapper clientSecurityWrapper) 
+            : base(endpointData, serializer, channelSettings, connetcionSettings, clientSecurityWrapper)
         {
         }
     }

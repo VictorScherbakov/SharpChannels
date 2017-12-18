@@ -3,6 +3,7 @@ using System.IO;
 using SharpChannels.Core.Contracts;
 using SharpChannels.Core.Messages;
 using SharpChannels.Core.Messages.System;
+using SharpChannels.Core.Security;
 using SharpChannels.Core.Serialization;
 using SharpChannels.Core.Serialization.System;
 
@@ -17,7 +18,10 @@ namespace SharpChannels.Core.Channels
         private bool _isDisposed;
 
         protected abstract void CloseInternal();
-        protected abstract Stream Stream { get; }
+
+        protected abstract Stream GetStream();
+        private Stream _wrappedStream;
+        protected virtual ISecurityWrapper SecurityWrapper => null;
 
         protected int MaxMessageLength { get; set; }
 
@@ -58,17 +62,28 @@ namespace SharpChannels.Core.Channels
             Enforce.State.FitsTo(!_isHandShaken, "Already handshaken");
         }
 
+
+
+        private Stream GetWrappedStream()
+        {
+            if (_wrappedStream == null)
+            {
+                var stream = GetStream();
+                _wrappedStream = SecurityWrapper == null ? stream : SecurityWrapper.Wrap(stream);
+            }
+            return _wrappedStream;
+        }
+
         public abstract IEndpointData EndpointData { get; }
 
         protected abstract void OpenTransport();
 
-        public virtual void Open()
+        public void Open()
         {
             Enforce.NotDisposed(this, _isDisposed);
             Enforce.State.FitsTo(!IsOpened, "Already opened");
 
             OpenTransport();
-
             RequestHandshake();
         }
 
@@ -101,8 +116,8 @@ namespace SharpChannels.Core.Channels
             {
                 lock (_writeLock)
                 {
-                    BinaryMessageWriter.Write(Stream, binaryMessage);
-                    Stream.Flush();
+                    BinaryMessageWriter.Write(GetWrappedStream(), binaryMessage);
+                    GetWrappedStream().Flush();
                 }
             }
             catch (IOException ex)
@@ -131,7 +146,7 @@ namespace SharpChannels.Core.Channels
         private void ThrowChannelClosedIfNeeded(Exception ex)
         {
             if (!IsOpened)
-                throw new DataTransferException("Message channel is unexpectedly closed by opposite side",
+                throw new DataTransferException("Message channel is unexpectedly closed by the opposite side",
                     DataTransferErrorCode.ChannelClosed, ex);
         }
 
@@ -147,7 +162,7 @@ namespace SharpChannels.Core.Channels
             {
                 lock (_readLock)
                 {
-                    return BinaryMessageReader.Read(Stream, CheckMessageLength);
+                    return BinaryMessageReader.Read(GetWrappedStream(), CheckMessageLength);
                 }
             }
             catch (IOException ex)

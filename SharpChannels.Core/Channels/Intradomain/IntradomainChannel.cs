@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using SharpChannels.Core.Contracts;
 using SharpChannels.Core.Messages;
+using SharpChannels.Core.Security;
 using SharpChannels.Core.Serialization;
 
 namespace SharpChannels.Core.Channels.Intradomain
@@ -22,7 +23,8 @@ namespace SharpChannels.Core.Channels.Intradomain
             _connectionManager.Disconnect(_socket);
         }
 
-        protected override Stream Stream => _connectionManager.GetStream(_socket);
+        protected override Stream GetStream() => _connectionManager.GetStream(_socket);
+        protected override ISecurityWrapper SecurityWrapper { get; }
 
         public override IEndpointData EndpointData => _endpoint;
 
@@ -51,11 +53,51 @@ namespace SharpChannels.Core.Channels.Intradomain
             }
         }
 
+        private static void EstablishConnection(IntradomainChannel channel, 
+                                             AutoResetEvent channelCreatedEvent, 
+                                             IntradomainSocket socket, 
+                                             TimeSpan connectTimeout)
+        {
+            // release waiting client
+            channelCreatedEvent.Set();
+
+            channel._connectionManager.WaitForConnection(socket.ConnectionId, (int)connectTimeout.TotalMilliseconds);
+
+            channel.ResponseHandshake();
+        }
+
+        internal static IntradomainChannel CreateAndOpen(AutoResetEvent channelCreatedEvent, 
+                                                         IntradomainSocket socket, 
+                                                         IMessageSerializer serializer, 
+                                                         ChannelSettings channelSettings = null, 
+                                                         IntradomainConnectionSettings connectionSettings = null,
+                                                         ISecurityWrapper serverSecurityWrapper = null)
+        {
+            var result = new IntradomainChannel(socket, serializer, channelSettings, connectionSettings, serverSecurityWrapper);
+
+            EstablishConnection(result, channelCreatedEvent, socket, connectionSettings?.ConnectTimeout ?? IntradomainConnectionSettingsBuilder.GetDefaultSettings().ConnectTimeout);
+            return result;
+        }
+
+        internal static IntradomainChannel<TMessage> CreateAndOpen<TMessage>(AutoResetEvent channelCreatedEvent, 
+                                                                             IntradomainSocket socket, 
+                                                                             IMessageSerializer serializer, 
+                                                                             ChannelSettings channelSettings = null, 
+                                                                             IntradomainConnectionSettings connectionSettings = null,
+                                                                             ISecurityWrapper serverSecurityWrapper = null)
+            where TMessage : IMessage
+        {
+            var result = new IntradomainChannel<TMessage>(socket, serializer, channelSettings, connectionSettings, serverSecurityWrapper);
+
+            EstablishConnection(result, channelCreatedEvent, socket, connectionSettings?.ConnectTimeout ?? IntradomainConnectionSettingsBuilder.GetDefaultSettings().ConnectTimeout);
+            return result;
+        }
+
         internal IntradomainChannel(IntradomainSocket socket, IMessageSerializer serializer)
         {
             Serializer = serializer;
 
-            _socket  = socket;
+            _socket = socket;
             _connectionManager = IntradomainConnectionManager.Instance;
         }
 
@@ -68,45 +110,30 @@ namespace SharpChannels.Core.Channels.Intradomain
             _connectionManager = IntradomainConnectionManager.Instance;
         }
 
-        private static void FinishConnection(IntradomainChannel channel, AutoResetEvent channelCreatedEvent, IntradomainSocket socket, TimeSpan connectTimeout)
-        {
-            // release waiting client
-            channelCreatedEvent.Set();
-
-            channel._connectionManager.WaitForConnection(socket.ConnectionId, (int)connectTimeout.TotalMilliseconds);
-
-            channel.ResponseHandshake();
-        }
-
-        internal static IntradomainChannel CreateAndOpen(AutoResetEvent channelCreatedEvent, IntradomainSocket socket, IMessageSerializer serializer, ChannelSettings channelSettings = null, IntradomainConnectionSettings connectionSettings = null)
-        {
-            var result = new IntradomainChannel(socket, serializer, channelSettings, connectionSettings);
-
-            FinishConnection(result, channelCreatedEvent, socket, connectionSettings?.ConnectTimeout ?? IntradomainConnectionSettingsBuilder.GetDefaultSettings().ConnectTimeout);
-            return result;
-        }
-
-        internal static IntradomainChannel<TMessage> CreateAndOpen<TMessage>(AutoResetEvent channelCreatedEvent, IntradomainSocket socket, IMessageSerializer serializer, ChannelSettings channelSettings = null, IntradomainConnectionSettings connectionSettings = null)
-            where TMessage : IMessage
-        {
-            var result = new IntradomainChannel<TMessage>(socket, serializer, channelSettings, connectionSettings);
-
-            FinishConnection(result, channelCreatedEvent, socket, connectionSettings?.ConnectTimeout ?? IntradomainConnectionSettingsBuilder.GetDefaultSettings().ConnectTimeout);
-            return result;
-        }
-
-        public IntradomainChannel(IntradomainEndpoint endpoint, IMessageSerializer serializer, ChannelSettings channelSettings = null, IntradomainConnectionSettings connectionSettings = null)
+        public IntradomainChannel(IntradomainEndpoint endpoint, 
+                                  IMessageSerializer serializer, 
+                                  ChannelSettings channelSettings = null, 
+                                  IntradomainConnectionSettings connectionSettings = null,
+                                  ISecurityWrapper clientSecurityWrapper = null)
             : this(endpoint, SocketType.Client, serializer)
         {
             _connectionSettings = connectionSettings ?? IntradomainConnectionSettingsBuilder.GetDefaultSettings();
             MaxMessageLength = channelSettings?.MaxMessageLength ?? ChannelSettings.GetDefault().MaxMessageLength;
+
+            SecurityWrapper = clientSecurityWrapper;
         }
 
-        internal IntradomainChannel(IntradomainSocket socket, IMessageSerializer serializer, ChannelSettings channelSettings = null, IntradomainConnectionSettings connectionSettings = null)
+        internal IntradomainChannel(IntradomainSocket socket, 
+                                    IMessageSerializer serializer, 
+                                    ChannelSettings channelSettings = null, 
+                                    IntradomainConnectionSettings connectionSettings = null,
+                                    ISecurityWrapper serverSecurityWrapper = null)
             : this(socket, serializer)
         {
             _connectionSettings = connectionSettings ?? IntradomainConnectionSettingsBuilder.GetDefaultSettings();
             MaxMessageLength = channelSettings?.MaxMessageLength ?? ChannelSettings.GetDefault().MaxMessageLength;
+
+            SecurityWrapper = serverSecurityWrapper;
         }
     }
 }

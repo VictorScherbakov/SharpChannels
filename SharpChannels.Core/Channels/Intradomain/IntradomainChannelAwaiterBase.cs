@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using SharpChannels.Core.Contracts;
+using SharpChannels.Core.Security;
 using SharpChannels.Core.Serialization;
 
 namespace SharpChannels.Core.Channels.Intradomain
@@ -25,6 +26,7 @@ namespace SharpChannels.Core.Channels.Intradomain
         internal IntradomainSocket ServerSocket { get; private set; }
 
         protected readonly IntradomainConnectionSettings ConnectionSettings;
+        protected readonly ISecurityWrapper ServerSecurityWrapper;
 
         protected virtual void OnErrorCreatingChannel(ExceptionEventArgs e)
         {
@@ -34,7 +36,7 @@ namespace SharpChannels.Core.Channels.Intradomain
         protected virtual IntradomainChannel CreateChannel(IMessageSerializer serializer)
         {
             return ChannelSettings != null
-                ? IntradomainChannel.CreateAndOpen(ChannelCreated, ServerSocket, serializer, ChannelSettings, ConnectionSettings)
+                ? IntradomainChannel.CreateAndOpen(ChannelCreated, ServerSocket, serializer, ChannelSettings, ConnectionSettings, ServerSecurityWrapper)
                 : IntradomainChannel.CreateAndOpen(ChannelCreated, ServerSocket, serializer);
         }
 
@@ -92,7 +94,11 @@ namespace SharpChannels.Core.Channels.Intradomain
             _stopEvent.Set();
         }
 
-        internal IntradomainChannelAwaiterBase(IntradomainEndpoint endpoint, IMessageSerializer serializer, ChannelSettings channelSettings = null, IntradomainConnectionSettings connectionSettings = null)
+        internal IntradomainChannelAwaiterBase(IntradomainEndpoint endpoint, 
+                                               IMessageSerializer serializer, 
+                                               ChannelSettings channelSettings = null, 
+                                               IntradomainConnectionSettings connectionSettings = null,
+                                               ISecurityWrapper serverSecurityWrapper = null)
         {
             Enforce.NotNull(endpoint, nameof(endpoint));
             Enforce.NotNull(serializer, nameof(serializer));
@@ -101,6 +107,7 @@ namespace SharpChannels.Core.Channels.Intradomain
             _serializer = serializer;
             ChannelSettings = channelSettings;
             ConnectionSettings = connectionSettings;
+            ServerSecurityWrapper = serverSecurityWrapper;
 
             _connectionManager = IntradomainConnectionManager.Instance;
         }

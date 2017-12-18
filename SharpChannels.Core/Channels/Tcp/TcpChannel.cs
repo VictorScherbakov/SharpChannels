@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using SharpChannels.Core.Contracts;
+using SharpChannels.Core.Security;
 using SharpChannels.Core.Serialization;
 
 namespace SharpChannels.Core.Channels.Tcp
@@ -19,7 +20,8 @@ namespace SharpChannels.Core.Channels.Tcp
             _client.Connect(_endpointData.Address, _endpointData.Port);
         }
 
-        protected override Stream Stream => _client.GetStream();
+        protected override Stream GetStream() => _client.GetStream();
+        protected override ISecurityWrapper SecurityWrapper { get; }
 
         protected override void CloseInternal()
         {
@@ -30,7 +32,11 @@ namespace SharpChannels.Core.Channels.Tcp
 
         public override bool IsOpened => _client.Connected;
 
-        internal TcpChannel(TcpClient client, IMessageSerializer serializer, ChannelSettings channelSettings, TcpConnectionSettings connetcionSettings)
+        internal TcpChannel(TcpClient client, 
+                            IMessageSerializer serializer, 
+                            ChannelSettings channelSettings, 
+                            TcpConnectionSettings connetcionSettings,
+                            ISecurityWrapper serverSecurityWrapper)
         {
             Enforce.NotNull(client, nameof(client));
             Enforce.NotNull(serializer, nameof(serializer));
@@ -43,6 +49,8 @@ namespace SharpChannels.Core.Channels.Tcp
 
             connetcionSettings.SetupClient(_client);
             MaxMessageLength = channelSettings.MaxMessageLength;
+
+            SecurityWrapper = serverSecurityWrapper;
 
             ResponseHandshake();
         }
@@ -62,12 +70,25 @@ namespace SharpChannels.Core.Channels.Tcp
             MaxMessageLength = ChannelSettings.GetDefault().MaxMessageLength;
         }
 
-        public TcpChannel(TcpEndpointData endpointData, IMessageSerializer serializer, ChannelSettings channelSettings, TcpConnectionSettings connetcionSettings)
+        private TcpChannel(TcpEndpointData endpointData, 
+                          IMessageSerializer serializer, 
+                          ChannelSettings channelSettings, 
+                          TcpConnectionSettings connetcionSettings)
             : this(endpointData, serializer)
         {
             connetcionSettings.SetupClient(_client);
 
             MaxMessageLength = channelSettings.MaxMessageLength;
+        }
+
+        public TcpChannel(TcpEndpointData endpointData,
+                  IMessageSerializer serializer,
+                  ChannelSettings channelSettings,
+                  TcpConnectionSettings connetcionSettings,
+                  ISecurityWrapper securityWrapper)
+            : this(endpointData, serializer, channelSettings, connetcionSettings)
+        {
+            SecurityWrapper = securityWrapper;
         }
 
         protected override void Dispose(bool disposing)

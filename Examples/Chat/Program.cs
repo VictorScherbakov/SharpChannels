@@ -45,7 +45,8 @@ namespace Examples.Chat
             var channel = new TcpChannel<StringMessage>(new TcpEndpointData(IPAddress.Loopback, 2000), 
                                                         new StringMessageSerializer(),
                                                         ChannelSettings.GetDefault(),
-                                                        GetChatConnectionSettings());
+                                                        GetChatConnectionSettings(),
+                                                        null);
             channel.Open();
             return channel;
         }

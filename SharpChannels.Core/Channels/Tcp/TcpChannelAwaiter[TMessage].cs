@@ -1,5 +1,6 @@
 ﻿using System.Net.Sockets;
 using SharpChannels.Core.Messages;
+using SharpChannels.Core.Security;
 using SharpChannels.Core.Serialization;
 
 namespace SharpChannels.Core.Channels.Tcp
@@ -12,7 +13,8 @@ namespace SharpChannels.Core.Channels.Tcp
             return new TcpChannel<TMessage>(client, 
                                             serializer, 
                                             ChannelSettings ?? ChannelSettings.GetDefault(), 
-                                            ConnectionSettings ?? TcpConnectionSettingsBuilder.GetDefaultSettings());
+                                            ConnectionSettings ?? TcpConnectionSettingsBuilder.GetDefaultSettings(),
+                                            ServerSecurityWrapper);
         }
 
         TcpChannel<TMessage> IChannelAwaiter<TcpChannel<TMessage>>.AwaitNewChannel()
@@ -23,8 +25,13 @@ namespace SharpChannels.Core.Channels.Tcp
         public TcpChannelAwaiter(TcpEndpointData endpointData, 
                                  IMessageSerializer serializer, 
                                  ChannelSettings channelSettings = null, 
-                                 TcpConnectionSettings connectionSettings = null)
-            : base(endpointData, serializer, channelSettings, connectionSettings)
+                                 TcpConnectionSettings connectionSettings = null,
+                                 ISecurityWrapper serverSecurityWrapper = null)
+            : base(endpointData, 
+                  serializer, 
+                  channelSettings, 
+                  connectionSettings, 
+                  serverSecurityWrapper)
         {
         }
     }

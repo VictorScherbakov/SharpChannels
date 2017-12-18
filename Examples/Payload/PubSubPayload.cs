@@ -28,7 +28,8 @@ namespace Examples.Payload
             var factory = new IntradomainCommunicationObjectsFactory<StringMessage>(new IntradomainEndpoint("pubsubpayload"),
                                                                                     new StringMessageSerializer(),
                                                                                     ChannelSettings.GetDefault(),
-                                                                                    connectionSettings);
+                                                                                    connectionSettings,
+                                                                                    null);
 
             return Scenarios.PubSub.Publisher(factory);
         }
@@ -42,7 +43,8 @@ namespace Examples.Payload
             var factory = new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Any, 2000),
                                                                             new StringMessageSerializer(),
                                                                             ChannelSettings.GetDefault(), 
-                                                                            connectionSettings);
+                                                                            connectionSettings,
+                                                                            null);
 
             return Scenarios.PubSub.Publisher(factory);
         }
@@ -56,7 +58,8 @@ namespace Examples.Payload
             return new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Loopback, 2000),
                                                                      new StringMessageSerializer(),
                                                                      ChannelSettings.GetDefault(),
-                                                                     connectionSettings);
+                                                                     connectionSettings,
+                                                                     null);
         }
 
         private ICommunicationObjectsFactory<StringMessage> GetIntradomainSubscriberFactory()
@@ -68,7 +71,8 @@ namespace Examples.Payload
             return new IntradomainCommunicationObjectsFactory<StringMessage>(new IntradomainEndpoint("pubsubpayload"),
                                                                              new StringMessageSerializer(),
                                                                              ChannelSettings.GetDefault(),
-                                                                             connectionSettings);
+                                                                             connectionSettings,
+                                                                             null);
         }
 
         private void Subscribe(Transport transport)

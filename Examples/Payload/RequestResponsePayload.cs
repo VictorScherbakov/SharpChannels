@@ -34,7 +34,8 @@ namespace Examples.Payload
             var factory = new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Any, 2000),
                                                                             new StringMessageSerializer(),
                                                                             ChannelSettings.GetDefault(),
-                                                                            connectionSettings);
+                                                                            connectionSettings,
+                                                                            null);
 
             return StartServer(factory);
         }
@@ -49,7 +50,8 @@ namespace Examples.Payload
             var factory = new IntradomainCommunicationObjectsFactory<StringMessage>(new IntradomainEndpoint("payload"),
                                                                                     new StringMessageSerializer(),
                                                                                     ChannelSettings.GetDefault(), 
-                                                                                    connectionSettings);
+                                                                                    connectionSettings, 
+                                                                                    null);
 
             return StartServer(factory);
         }
@@ -64,7 +66,8 @@ namespace Examples.Payload
             var clientFactory = new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Loopback, 2000),
                                                                                   new StringMessageSerializer(),
                                                                                   ChannelSettings.GetDefault(), 
-                                                                                  connectionSettings);
+                                                                                  connectionSettings,
+                                                                                  null);
 
             return Scenarios.RequestResponse.Requester(clientFactory);
         }
@@ -79,7 +82,8 @@ namespace Examples.Payload
             var clientFactory = new IntradomainCommunicationObjectsFactory<StringMessage>(new IntradomainEndpoint("payload"),
                                                                                           new StringMessageSerializer(),
                                                                                           ChannelSettings.GetDefault(),
-                                                                                          connectionSettings);
+                                                                                          connectionSettings,
+                                                                                          null);
 
             return Scenarios.RequestResponse.Requester(clientFactory);
         }

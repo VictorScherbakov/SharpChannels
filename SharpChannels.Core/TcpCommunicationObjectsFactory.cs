@@ -2,6 +2,7 @@
 using SharpChannels.Core.Channels.Tcp;
 using SharpChannels.Core.Contracts;
 using SharpChannels.Core.Messages;
+using SharpChannels.Core.Security;
 using SharpChannels.Core.Serialization;
 
 namespace SharpChannels.Core
@@ -13,26 +14,28 @@ namespace SharpChannels.Core
         private readonly IMessageSerializer _serializer;
         private readonly ChannelSettings _channelSettings;
         private readonly TcpConnectionSettings _connetcionSettings;
+        private readonly ISecurityWrapper _securityWrapper;
 
         public IChannel<TMessage> CreateChannel()
         {
-            return new TcpChannel<TMessage>(_endpointData, _serializer, _channelSettings, _connetcionSettings);
+            return new TcpChannel<TMessage>(_endpointData, _serializer, _channelSettings, _connetcionSettings, _securityWrapper);
         }
 
         public IChannelAwaiter<IChannel<TMessage>> CreateChannelAwaiter()
         {
-            return new TcpChannelAwaiter<TMessage>(_endpointData, _serializer, _channelSettings, _connetcionSettings);
+            return new TcpChannelAwaiter<TMessage>(_endpointData, _serializer, _channelSettings, _connetcionSettings, _securityWrapper);
         }
 
         public TcpCommunicationObjectsFactory(TcpEndpointData endpointData, IMessageSerializer serializer)
-            : this(endpointData, serializer, ChannelSettings.GetDefault(), TcpConnectionSettingsBuilder.GetDefaultSettings())
+            : this(endpointData, serializer, ChannelSettings.GetDefault(), TcpConnectionSettingsBuilder.GetDefaultSettings(), null)
         {
         }
 
         public TcpCommunicationObjectsFactory(TcpEndpointData endpointData, 
                                               IMessageSerializer serializer, 
                                               ChannelSettings channelSettings, 
-                                              TcpConnectionSettings connetcionSettings)
+                                              TcpConnectionSettings connetcionSettings,
+                                              ISecurityWrapper securityWrapper)
         {
             Enforce.NotNull(endpointData, nameof(endpointData));
             Enforce.NotNull(serializer, nameof(serializer));
@@ -43,6 +46,7 @@ namespace SharpChannels.Core
             _serializer = serializer;
             _channelSettings = channelSettings;
             _connetcionSettings = connetcionSettings;
+            _securityWrapper = securityWrapper;
         }
     }
 }

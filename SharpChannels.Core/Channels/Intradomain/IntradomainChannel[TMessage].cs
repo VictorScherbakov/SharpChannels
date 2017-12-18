@@ -1,4 +1,5 @@
 ﻿using SharpChannels.Core.Messages;
+using SharpChannels.Core.Security;
 using SharpChannels.Core.Serialization;
 
 namespace SharpChannels.Core.Channels.Intradomain
@@ -17,17 +18,25 @@ namespace SharpChannels.Core.Channels.Intradomain
         }
 
         public IntradomainChannel(IntradomainEndpoint endpoint, IMessageSerializer serializer) 
-            : this(endpoint, serializer, null, null)
+            : this(endpoint, serializer, null, null, null)
         {
         }
 
-        public IntradomainChannel(IntradomainEndpoint endpoint, IMessageSerializer serializer, ChannelSettings channelSettings = null, IntradomainConnectionSettings connectionSettings = null) 
-            : base(endpoint, serializer, channelSettings, connectionSettings)
+        public IntradomainChannel(IntradomainEndpoint endpoint, 
+                                  IMessageSerializer serializer, 
+                                  ChannelSettings channelSettings = null, 
+                                  IntradomainConnectionSettings connectionSettings = null,
+                                  ISecurityWrapper clientSecurityWrapper = null) 
+            : base(endpoint, serializer, channelSettings, connectionSettings, clientSecurityWrapper)
         {
         }
 
-        internal IntradomainChannel(IntradomainSocket socket, IMessageSerializer serializer, ChannelSettings channelSettings = null, IntradomainConnectionSettings connectionSettings = null)
-            : base(socket, serializer, channelSettings, connectionSettings)
+        internal IntradomainChannel(IntradomainSocket socket, 
+                                    IMessageSerializer serializer, 
+                                    ChannelSettings channelSettings = null, 
+                                    IntradomainConnectionSettings connectionSettings = null,
+                                    ISecurityWrapper serverSecurityWrapper = null)
+            : base(socket, serializer, channelSettings, connectionSettings, serverSecurityWrapper)
         {
         }
     }

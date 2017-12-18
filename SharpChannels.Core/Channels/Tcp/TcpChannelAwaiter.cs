@@ -2,6 +2,7 @@
 using System.Net.Sockets;
 using System.Threading;
 using SharpChannels.Core.Contracts;
+using SharpChannels.Core.Security;
 using SharpChannels.Core.Serialization;
 
 namespace SharpChannels.Core.Channels.Tcp
@@ -20,6 +21,7 @@ namespace SharpChannels.Core.Channels.Tcp
 
         protected readonly ChannelSettings ChannelSettings;
         protected readonly TcpConnectionSettings ConnectionSettings;
+        protected readonly ISecurityWrapper ServerSecurityWrapper;
 
         protected virtual void OnErrorCreatingChannel(ExceptionEventArgs e)
         {
@@ -28,9 +30,11 @@ namespace SharpChannels.Core.Channels.Tcp
 
         protected virtual TcpChannel CreateChannel(TcpClient client, IMessageSerializer serializer)
         {
-            return new TcpChannel(client, serializer, 
-                ChannelSettings ?? ChannelSettings.GetDefault(), 
-                ConnectionSettings ?? TcpConnectionSettingsBuilder.GetDefaultSettings());
+            return new TcpChannel(client, 
+                                  serializer, 
+                                  ChannelSettings ?? ChannelSettings.GetDefault(), 
+                                  ConnectionSettings ?? TcpConnectionSettingsBuilder.GetDefaultSettings(),
+                                  ServerSecurityWrapper);
         }
 
         public event EventHandler<ExceptionEventArgs> ErrorCreatingChannel;
@@ -86,7 +90,11 @@ namespace SharpChannels.Core.Channels.Tcp
             _listener.Stop();
         }
 
-        public TcpChannelAwaiter(TcpEndpointData endpointData, IMessageSerializer serializer, ChannelSettings channelSettings = null, TcpConnectionSettings connectionSettings = null)
+        public TcpChannelAwaiter(TcpEndpointData endpointData, 
+                                 IMessageSerializer serializer, 
+                                 ChannelSettings channelSettings = null, 
+                                 TcpConnectionSettings connectionSettings = null,
+                                 ISecurityWrapper serverSecurityWrapper = null)
         {
             Enforce.NotNull(endpointData, nameof(endpointData));
             Enforce.NotNull(serializer, nameof(serializer));
@@ -95,6 +103,7 @@ namespace SharpChannels.Core.Channels.Tcp
             _serializer = serializer;
             ChannelSettings = channelSettings;
             ConnectionSettings = connectionSettings;
+            ServerSecurityWrapper = serverSecurityWrapper;
             _listener = new TcpListenerEx(endpointData.Address, endpointData.Port);
             _listener.ExclusiveAddressUse = true;
         }

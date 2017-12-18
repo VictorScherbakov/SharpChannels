@@ -59,6 +59,7 @@
     <Compile Include="Channels\Intradomain\IntradomainEndpoint.cs" />
     <Compile Include="Channels\Intradomain\IntradomainConnectionSettings.cs" />
     <Compile Include="Channels\Intradomain\IntradomainStream.cs" />
+    <Compile Include="Security\ISecurityWrapper.cs" />
     <Compile Include="Channels\NewChannelRequestAcceptor.cs" />
     <Compile Include="Channels\ClientAcceptedEventArgs.cs" />
     <Compile Include="Channels\DataTransferErrorCode.cs" />
