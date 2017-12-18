@@ -29,6 +29,9 @@ It also gives you a seamless switching between transport protocols.
 - TCP
 - In-process (inside AppDomain)
 
+#### Security
+- TLS 1.2
+
 #### Serialization
 - built-in for text messages
 - built-in for binary messages
