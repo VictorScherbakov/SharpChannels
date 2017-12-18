@@ -45,7 +45,7 @@
     <Compile Include="ServerTlsWrapper.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SharpChannels.Core\SharpChannels.Core.csproj">
+    <ProjectReference Include="..\SharpChannels.Core\SharpChannels.Core.csproj">
       <Project>{3a58294d-07fa-4d64-82fd-21f873b4863b}</Project>
       <Name>SharpChannels.Core</Name>
     </ProjectReference>

@@ -53,7 +53,7 @@
       <Project>{3a58294d-07fa-4d64-82fd-21f873b4863b}</Project>
       <Name>SharpChannels.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\SharpChannels.Security\SharpChannels.Security\SharpChannels.Security.csproj">
+    <ProjectReference Include="..\..\SharpChannels.Security\SharpChannels.Security.csproj">
       <Project>{c389c58f-7d21-4e7b-a4b6-066a342acf2b}</Project>
       <Name>SharpChannels.Security</Name>
     </ProjectReference>
