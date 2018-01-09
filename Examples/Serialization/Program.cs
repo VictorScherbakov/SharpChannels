@@ -6,7 +6,6 @@ using SharpChannels.Core.Serialization;
 using SharpChannels.Core.Serialization.Protobuf;
 using System.Linq;
 using SharpChannels.Core;
-using SharpChannels.Core.Messages;
 
 namespace Examples.Serialization
 {

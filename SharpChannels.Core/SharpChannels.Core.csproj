@@ -59,6 +59,7 @@
     <Compile Include="Channels\Intradomain\IntradomainEndpoint.cs" />
     <Compile Include="Channels\Intradomain\IntradomainConnectionSettings.cs" />
     <Compile Include="Channels\Intradomain\IntradomainStream.cs" />
+    <Compile Include="Communication\Scenarios.PubSub.cs" />
     <Compile Include="Security\ISecurityWrapper.cs" />
     <Compile Include="Channels\NewChannelRequestAcceptor.cs" />
     <Compile Include="Channels\ClientAcceptedEventArgs.cs" />
@@ -87,7 +88,7 @@
     <Compile Include="Communication\IRequester.cs" />
     <Compile Include="Communication\IResponder.cs" />
     <Compile Include="Communication\Responder.cs" />
-    <Compile Include="Communication\Scenarios.cs" />
+    <Compile Include="Communication\Scenarios.RequestResponse.cs" />
     <Compile Include="Communication\SubscriptionManager.cs" />
     <Compile Include="Contracts\Enforce.cs" />
     <Compile Include="IntradomainCommunicationObjectsFactory.cs" />
