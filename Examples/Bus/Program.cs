@@ -14,25 +14,25 @@ namespace Examples.Bus
         {
             var serializer = new StringMessageSerializer();
 
-            var serverSubscribersFactory = new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Any, 2000), serializer);
-            var serverPublishersFactory = new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Any, 2001), serializer);
+            var serverSubscribersCommunication = new TcpCommunication<StringMessage>(new TcpEndpointData(IPAddress.Any, 2000), serializer);
+            var serverPublishersCommunication = new TcpCommunication<StringMessage>(new TcpEndpointData(IPAddress.Any, 2001), serializer);
 
-            var clientSubscribersFactory = new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Loopback, 2000), serializer);
-            var clientPublishersFactory = new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Loopback, 2001), serializer);
+            var clientSubscribersCommunication = new TcpCommunication<StringMessage>(new TcpEndpointData(IPAddress.Loopback, 2000), serializer);
+            var clientPublishersCommunication = new TcpCommunication<StringMessage>(new TcpEndpointData(IPAddress.Loopback, 2001), serializer);
 
-            var server = Scenarios.Bus.Server(serverSubscribersFactory, serverPublishersFactory);
+            var server = Scenarios.Bus.RunServer(serverSubscribersCommunication, serverPublishersCommunication);
 
-            var client1 = Scenarios.Bus.SetupClient(clientSubscribersFactory, clientPublishersFactory)
+            var client1 = Scenarios.Bus.SetupClient(clientSubscribersCommunication, clientPublishersCommunication)
                 .UsingTopics(new[] { "first topic" })
                 .UsingMessageReceivedHandler((s, a) => { Console.WriteLine($"Client 1 received: {a.Message}"); })
                 .Go();
 
-            var client2 = Scenarios.Bus.SetupClient(clientSubscribersFactory, clientPublishersFactory)
+            var client2 = Scenarios.Bus.SetupClient(clientSubscribersCommunication, clientPublishersCommunication)
                 .UsingTopics(new[] { "second topic" })
                 .UsingMessageReceivedHandler((s, a) => { Console.WriteLine($"Client 2 received: {a.Message}"); })
                 .Go();
 
-            var client3 = Scenarios.Bus.SetupClient(clientSubscribersFactory, clientPublishersFactory)
+            var client3 = Scenarios.Bus.SetupClient(clientSubscribersCommunication, clientPublishersCommunication)
                 .UsingTopics(new[] { "second topic" })
                 .UsingMessageReceivedHandler((s, a) => { Console.WriteLine($"Client 3 received: {a.Message}"); })
                 .Go();

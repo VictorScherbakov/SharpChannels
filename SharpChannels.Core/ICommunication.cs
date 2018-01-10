@@ -3,7 +3,7 @@ using SharpChannels.Core.Messages;
 
 namespace SharpChannels.Core
 {
-    public interface ICommunicationObjectsFactory<TMessage> 
+    public interface ICommunication<TMessage> 
         where TMessage : IMessage
     {
         IChannel<TMessage> CreateChannel();

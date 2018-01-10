@@ -13,32 +13,32 @@ namespace SharpChannels.Core.Communication
     {
         public static class Bus
         {
-            public static ClientSetup<TMessage> SetupClient<TMessage>(ICommunicationObjectsFactory<TMessage> subscribersFactory,
-                                                                      ICommunicationObjectsFactory<TMessage> publishersFactory)
+            public static ClientSetup<TMessage> SetupClient<TMessage>(ICommunication<TMessage> subscribersCommunication,
+                                                                      ICommunication<TMessage> publishersCommunication)
                 where TMessage : IMessage
             {
-                Enforce.NotNull(subscribersFactory, nameof(subscribersFactory));
-                Enforce.NotNull(publishersFactory, nameof(publishersFactory));
+                Enforce.NotNull(subscribersCommunication, nameof(subscribersCommunication));
+                Enforce.NotNull(publishersCommunication, nameof(publishersCommunication));
 
-                return new ClientSetup<TMessage>(subscribersFactory, publishersFactory);
+                return new ClientSetup<TMessage>(subscribersCommunication, publishersCommunication);
             }
 
             public class ClientSetup<TMessage> where TMessage : IMessage
             {
                 private bool _setupFinished;
-                private readonly ICommunicationObjectsFactory<TMessage> _subscribersFactory;
-                private readonly ICommunicationObjectsFactory<TMessage> _publishersFactory;
+                private readonly ICommunication<TMessage> _subscribersCommunication;
+                private readonly ICommunication<TMessage> _publishersCommunication;
                 private IEnumerable<string> _topics;
                 private readonly string _setupFinishedDescription = "'Using...' methods should be called before 'Go'";
                 private EventHandler<MessageEventArgs> _messageReceivedHandler;
                 private EventHandler<EventArgs> _channelClosedHandler;
                 private EventHandler<ExceptionEventArgs> _receiveMessageFailedHandler;
 
-                internal ClientSetup(ICommunicationObjectsFactory<TMessage> subscribersFactory,
-                                     ICommunicationObjectsFactory<TMessage> publishersFactory)
+                internal ClientSetup(ICommunication<TMessage> subscribersCommunication,
+                                     ICommunication<TMessage> publishersCommunication)
                 {
-                    _subscribersFactory = subscribersFactory;
-                    _publishersFactory = publishersFactory;
+                    _subscribersCommunication = subscribersCommunication;
+                    _publishersCommunication = publishersCommunication;
                 }
 
                 public ClientSetup<TMessage> UsingTopics(IEnumerable<string> topics)
@@ -77,7 +77,7 @@ namespace SharpChannels.Core.Communication
                 {
                     _setupFinished = true;
 
-                    var subscribersChannel = _subscribersFactory.CreateChannel();
+                    var subscribersChannel = _subscribersCommunication.CreateChannel();
                     var receiver = new Receiver(subscribersChannel);
 
                     receiver.MessageReceived += (sender, eventArgs) =>
@@ -100,21 +100,21 @@ namespace SharpChannels.Core.Communication
                     if(_topics.Any())
                         subscribersChannel.Send(new SubscribeMessage(_topics), new SubscribeMessageSerializer());
 
-                    var publishersChannel = _publishersFactory.CreateChannel();
+                    var publishersChannel = _publishersCommunication.CreateChannel();
                     publishersChannel.Open();
 
                     return new BusClient<TMessage>(subscribersChannel, publishersChannel);
                 }
             }
 
-            public static IBusServer<TMessage> Server<TMessage>(ICommunicationObjectsFactory<TMessage> subscribersFactory,
-                                                                ICommunicationObjectsFactory<TMessage> publishersFactory)
+            public static IBusServer<TMessage> RunServer<TMessage>(ICommunication<TMessage> subscribersCommunication,
+                                                                ICommunication<TMessage> publishersCommunication)
                 where TMessage : IMessage
             {
-                Enforce.NotNull(subscribersFactory, nameof(subscribersFactory));
-                Enforce.NotNull(publishersFactory, nameof(publishersFactory));
+                Enforce.NotNull(subscribersCommunication, nameof(subscribersCommunication));
+                Enforce.NotNull(publishersCommunication, nameof(publishersCommunication));
 
-                return new BusServer<TMessage>(subscribersFactory, publishersFactory);
+                return new BusServer<TMessage>(subscribersCommunication, publishersCommunication);
             }
         }
     }

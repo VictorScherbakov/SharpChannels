@@ -35,34 +35,34 @@ namespace Examples.Transport
 
             var serializer = new StringMessageSerializer();
 
-            ICommunicationObjectsFactory<StringMessage> serverFactory;
+            ICommunication<StringMessage> serverCommunication;
             if (transport == Transport.Tcp)
             {
-                serverFactory = new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Any, 2000), serializer);
+                serverCommunication = new TcpCommunication<StringMessage>(new TcpEndpointData(IPAddress.Any, 2000), serializer);
             }
             else
             {
-                serverFactory = new IntradomainCommunicationObjectsFactory<StringMessage>(new IntradomainEndpoint("test"), serializer);
+                serverCommunication = new IntradomainCommunication<StringMessage>(new IntradomainEndpoint("test"), serializer);
             }
 
 
-            var server = Scenarios.RequestResponse.SetupServer(serverFactory)
+            var server = Scenarios.RequestResponse.SetupServer(serverCommunication)
                 .UsingNewClientHandler((sender, a) => { Console.WriteLine("channel opened"); })
                 .UsingRequestHandler((sender, a) => { a.Response = new StringMessage(a.Request.Message.Replace("request", "response")); })
                 .UsingChannelClosedHandler((sender, a) => { Console.WriteLine("channel closed"); })
                 .Go();
 
-            ICommunicationObjectsFactory<StringMessage> clientFactory;
+            ICommunication<StringMessage> clientCommunication;
             if (transport == Transport.Tcp)
             {
-                clientFactory = new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Loopback, 2000), serializer);
+                clientCommunication = new TcpCommunication<StringMessage>(new TcpEndpointData(IPAddress.Loopback, 2000), serializer);
             }
             else
             {
-                clientFactory = new IntradomainCommunicationObjectsFactory<StringMessage>(new IntradomainEndpoint("test"), serializer);
+                clientCommunication = new IntradomainCommunication<StringMessage>(new IntradomainEndpoint("test"), serializer);
             }
 
-            var r = Scenarios.RequestResponse.Requester(clientFactory);
+            var r = Scenarios.RequestResponse.Requester(clientCommunication);
 
             using (r.Channel)
             {

@@ -17,9 +17,9 @@ namespace Examples.Payload
     public class RequestResponsePayload
     {
 
-        private NewChannelRequestAcceptor StartServer(ICommunicationObjectsFactory<StringMessage> factory)
+        private NewChannelRequestAcceptor StartServer(ICommunication<StringMessage> communication)
         {
-            return Scenarios.RequestResponse.SetupServer(factory)
+            return Scenarios.RequestResponse.SetupServer(communication)
                 .UsingRequestHandler((sender, a) => { a.Response = new StringMessage(a.Request.Message + " response"); })
                 .Go();
         }
@@ -31,13 +31,13 @@ namespace Examples.Payload
                                         .UsingReceiveTimeout(TimeSpan.FromHours(1))
                                         .Build();
 
-            var factory = new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Any, 2000),
-                                                                            new StringMessageSerializer(),
-                                                                            ChannelSettings.GetDefault(),
-                                                                            connectionSettings,
-                                                                            null);
+            var communication = new TcpCommunication<StringMessage>(new TcpEndpointData(IPAddress.Any, 2000),
+                                                                    new StringMessageSerializer(),
+                                                                    ChannelSettings.GetDefault(),
+                                                                    connectionSettings,
+                                                                    null);
 
-            return StartServer(factory);
+            return StartServer(communication);
         }
 
         private NewChannelRequestAcceptor StartIntradomainServer()
@@ -47,13 +47,13 @@ namespace Examples.Payload
                                         .UsingReceiveTimeout(TimeSpan.FromHours(1))
                                         .Build();
 
-            var factory = new IntradomainCommunicationObjectsFactory<StringMessage>(new IntradomainEndpoint("payload"),
-                                                                                    new StringMessageSerializer(),
-                                                                                    ChannelSettings.GetDefault(), 
-                                                                                    connectionSettings, 
-                                                                                    null);
+            var communication = new IntradomainCommunication<StringMessage>(new IntradomainEndpoint("payload"),
+                                                                            new StringMessageSerializer(),
+                                                                            ChannelSettings.GetDefault(), 
+                                                                            connectionSettings, 
+                                                                            null);
 
-            return StartServer(factory);
+            return StartServer(communication);
         }
 
         private IRequester GetTcpRequester()
@@ -63,13 +63,13 @@ namespace Examples.Payload
                                         .UsingReceiveTimeout(TimeSpan.FromHours(1))
                                         .Build();
 
-            var clientFactory = new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Loopback, 2000),
-                                                                                  new StringMessageSerializer(),
-                                                                                  ChannelSettings.GetDefault(), 
-                                                                                  connectionSettings,
-                                                                                  null);
+            var clientCommunication = new TcpCommunication<StringMessage>(new TcpEndpointData(IPAddress.Loopback, 2000),
+                                                                          new StringMessageSerializer(),
+                                                                          ChannelSettings.GetDefault(), 
+                                                                          connectionSettings,
+                                                                          null);
 
-            return Scenarios.RequestResponse.Requester(clientFactory);
+            return Scenarios.RequestResponse.Requester(clientCommunication);
         }
 
         private IRequester GetIntradomainRequester()
@@ -79,13 +79,13 @@ namespace Examples.Payload
                                         .UsingReceiveTimeout(TimeSpan.FromHours(1))
                                         .Build();
 
-            var clientFactory = new IntradomainCommunicationObjectsFactory<StringMessage>(new IntradomainEndpoint("payload"),
-                                                                                          new StringMessageSerializer(),
-                                                                                          ChannelSettings.GetDefault(),
-                                                                                          connectionSettings,
-                                                                                          null);
+            var clientCommunication = new IntradomainCommunication<StringMessage>(new IntradomainEndpoint("payload"),
+                                                                                  new StringMessageSerializer(),
+                                                                                  ChannelSettings.GetDefault(),
+                                                                                  connectionSettings,
+                                                                                  null);
 
-            return Scenarios.RequestResponse.Requester(clientFactory);
+            return Scenarios.RequestResponse.Requester(clientCommunication);
         }
 
         public void Run(Transport transport, int clientCount, int messagePerClient, Action<string> log)

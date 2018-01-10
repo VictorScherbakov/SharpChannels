@@ -7,7 +7,7 @@ using SharpChannels.Core.Serialization;
 
 namespace SharpChannels.Core
 {
-    public class IntradomainCommunicationObjectsFactory<TMessage> : ICommunicationObjectsFactory<TMessage>
+    public class IntradomainCommunication<TMessage> : ICommunication<TMessage>
         where TMessage : IMessage
     {
         private readonly IntradomainEndpoint _endpoint;
@@ -26,12 +26,12 @@ namespace SharpChannels.Core
             return new IntradomainChannelAwaiter<TMessage>(_endpoint, _serializer, _channelSettings, _connetcionSettings, _securityWrapper);
         }
 
-        public IntradomainCommunicationObjectsFactory(IntradomainEndpoint endpoint, IMessageSerializer serializer)
+        public IntradomainCommunication(IntradomainEndpoint endpoint, IMessageSerializer serializer)
             : this(endpoint, serializer, ChannelSettings.GetDefault(), IntradomainConnectionSettingsBuilder.GetDefaultSettings(), null)
         {
         }
 
-        public IntradomainCommunicationObjectsFactory(IntradomainEndpoint endpoint,
+        public IntradomainCommunication(IntradomainEndpoint endpoint,
                                                       IMessageSerializer serializer,
                                                       ChannelSettings channelSettings,
                                                       IntradomainConnectionSettings connetcionSettings,

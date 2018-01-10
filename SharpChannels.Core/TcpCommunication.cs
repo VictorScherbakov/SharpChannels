@@ -7,7 +7,7 @@ using SharpChannels.Core.Serialization;
 
 namespace SharpChannels.Core
 {
-    public class TcpCommunicationObjectsFactory<TMessage> : ICommunicationObjectsFactory<TMessage>
+    public class TcpCommunication<TMessage> : ICommunication<TMessage>
         where TMessage : IMessage
     {
         private readonly TcpEndpointData _endpointData;
@@ -26,12 +26,12 @@ namespace SharpChannels.Core
             return new TcpChannelAwaiter<TMessage>(_endpointData, _serializer, _channelSettings, _connetcionSettings, _securityWrapper);
         }
 
-        public TcpCommunicationObjectsFactory(TcpEndpointData endpointData, IMessageSerializer serializer)
+        public TcpCommunication(TcpEndpointData endpointData, IMessageSerializer serializer)
             : this(endpointData, serializer, ChannelSettings.GetDefault(), TcpConnectionSettingsBuilder.GetDefaultSettings(), null)
         {
         }
 
-        public TcpCommunicationObjectsFactory(TcpEndpointData endpointData, 
+        public TcpCommunication(TcpEndpointData endpointData, 
                                               IMessageSerializer serializer, 
                                               ChannelSettings channelSettings, 
                                               TcpConnectionSettings connetcionSettings,

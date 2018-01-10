@@ -35,9 +35,9 @@ namespace Examples.Serialization
 
             Console.WriteLine();
 
-            var serverFactory = new TcpCommunicationObjectsFactory<Message>(new TcpEndpointData(IPAddress.Any, 2000), serializer);
+            var serverCommunication = new TcpCommunication<Message>(new TcpEndpointData(IPAddress.Any, 2000), serializer);
 
-            var server = Scenarios.RequestResponse.SetupServer(serverFactory)
+            var server = Scenarios.RequestResponse.SetupServer(serverCommunication)
                 .UsingRequestHandler((sender, a) =>
                                             {
                                                 a.Response = new Message
@@ -50,9 +50,9 @@ namespace Examples.Serialization
                 .Go();
 
 
-            var clientFactory = new TcpCommunicationObjectsFactory<Message>(new TcpEndpointData(IPAddress.Loopback, 2000), serializer);
+            var clientCommunication = new TcpCommunication<Message>(new TcpEndpointData(IPAddress.Loopback, 2000), serializer);
 
-            var r = Scenarios.RequestResponse.Requester(clientFactory);
+            var r = Scenarios.RequestResponse.Requester(clientCommunication);
 
             using (r.Channel)
             {

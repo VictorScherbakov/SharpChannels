@@ -12,10 +12,10 @@ namespace SharpChannels.Core.Communication
     {
         public static class PubSub
         {
-            public static IPublisher<TMessage> Publisher<TMessage>(ICommunicationObjectsFactory<TMessage> factory)
+            public static IPublisher<TMessage> Publisher<TMessage>(ICommunication<TMessage> communication)
                 where TMessage : IMessage
             {
-                var awaiter = factory.CreateChannelAwaiter();
+                var awaiter = communication.CreateChannelAwaiter();
                 var requestAcceptor = new NewChannelRequestAcceptor(awaiter);
                 var publisher = new Publisher<TMessage>(requestAcceptor, true);
                 requestAcceptor.StartAcceptLoop();
@@ -23,17 +23,17 @@ namespace SharpChannels.Core.Communication
                 return publisher;
             }
 
-            public static SubscriptionSetup<TMessage> SetupSubscription<TMessage>(ICommunicationObjectsFactory<TMessage> factory, IEnumerable<string> topics)
+            public static SubscriptionSetup<TMessage> SetupSubscription<TMessage>(ICommunication<TMessage> communication, IEnumerable<string> topics)
                 where TMessage : IMessage
             {
-                Enforce.NotNull(factory, nameof(factory));
+                Enforce.NotNull(communication, nameof(communication));
 
-                return new SubscriptionSetup<TMessage>(factory, topics);
+                return new SubscriptionSetup<TMessage>(communication, topics);
             }
 
             public class SubscriptionSetup<TMessage> where TMessage : IMessage
             {
-                private readonly ICommunicationObjectsFactory<TMessage> _factory;
+                private readonly ICommunication<TMessage> _communication;
                 private readonly IEnumerable<string> _topics;
                 private EventHandler<MessageEventArgs> _messageReceivedHandler;
                 private EventHandler<EventArgs> _channelClosedHandler;
@@ -41,9 +41,9 @@ namespace SharpChannels.Core.Communication
                 private bool _setupFinished;
                 private readonly string _setupFinishedDescription = "'Using...' methods should be called before 'Go'";
 
-                internal SubscriptionSetup(ICommunicationObjectsFactory<TMessage> factory, IEnumerable<string> topics)
+                internal SubscriptionSetup(ICommunication<TMessage> communication, IEnumerable<string> topics)
                 {
-                    _factory = factory;
+                    _communication = communication;
                     _topics = topics;
                 }
 
@@ -75,7 +75,7 @@ namespace SharpChannels.Core.Communication
                 {
                     _setupFinished = true;
 
-                    var channel = _factory.CreateChannel();
+                    var channel = _communication.CreateChannel();
                     var receiver = new Receiver(channel);
 
                     receiver.MessageReceived += (sender, eventArgs) =>

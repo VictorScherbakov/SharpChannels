@@ -9,34 +9,34 @@ namespace SharpChannels.Core.Communication
     {
         public static class RequestResponse
         {
-            public static IRequester Requester<TMessage>(ICommunicationObjectsFactory<TMessage> factory)
+            public static IRequester Requester<TMessage>(ICommunication<TMessage> communication)
                 where TMessage : IMessage
             {
-                var channel = factory.CreateChannel();
+                var channel = communication.CreateChannel();
                 return new Requester(channel);
             }
 
-            public static ServerSetup<TMessage> SetupServer<TMessage>(ICommunicationObjectsFactory<TMessage> factory)
+            public static ServerSetup<TMessage> SetupServer<TMessage>(ICommunication<TMessage> communication)
                 where TMessage : IMessage
             {
-                Enforce.NotNull(factory, nameof(factory));
+                Enforce.NotNull(communication, nameof(communication));
 
-                return new ServerSetup<TMessage>(factory);
+                return new ServerSetup<TMessage>(communication);
             }
 
             public class ServerSetup<TMessage>
                 where TMessage : IMessage
             {
-                private readonly ICommunicationObjectsFactory<TMessage> _factory;
+                private readonly ICommunication<TMessage> _communication;
                 private EventHandler<RequestReceivedArgs<TMessage>> _requestHandler;
                 private EventHandler<EventArgs> _channelClosedHandler;
                 private EventHandler<ClientAcceptedEventArgs> _newClientHandler;
                 private bool _setupFinished;
                 private readonly string _setupFinishedDescription = "'Using...' methods should be called before 'Go'";
 
-                internal ServerSetup(ICommunicationObjectsFactory<TMessage> factory)
+                internal ServerSetup(ICommunication<TMessage> communication)
                 {
-                    _factory = factory;
+                    _communication = communication;
                 }
 
                 public ServerSetup<TMessage> UsingRequestHandler(EventHandler<RequestReceivedArgs<TMessage>> requestHandler)
@@ -66,7 +66,7 @@ namespace SharpChannels.Core.Communication
                 public NewChannelRequestAcceptor Go()
                 {
                     _setupFinished = true;
-                    var awaiter = _factory.CreateChannelAwaiter();
+                    var awaiter = _communication.CreateChannelAwaiter();
 
                     var requestAcceptor = new NewChannelRequestAcceptor(awaiter);
                     requestAcceptor.ClientAccepted += (sender, a) =>

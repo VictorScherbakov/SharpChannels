@@ -14,16 +14,16 @@ namespace SharpChannels.Core.Communication
         private readonly Publisher<TMessage> _publisher;
         private readonly Lazy<StringMessageSerializer> _stringMessageSerializer = new Lazy<StringMessageSerializer>(() => new StringMessageSerializer());
 
-        public BusServer(ICommunicationObjectsFactory<TMessage> subscriptorsFactory,
-                         ICommunicationObjectsFactory<TMessage> publishersFactory)
+        public BusServer(ICommunication<TMessage> subscribersCommunication,
+                         ICommunication<TMessage> publishersCommunication)
         {
-            var subscriptionChannelAwaiter = subscriptorsFactory.CreateChannelAwaiter();
+            var subscriptionChannelAwaiter = subscribersCommunication.CreateChannelAwaiter();
             var subscriptionRequestAcceptor = new NewChannelRequestAcceptor(subscriptionChannelAwaiter);
 
             _publisher = new Publisher<TMessage>(subscriptionRequestAcceptor, true);
             subscriptionRequestAcceptor.StartAcceptLoop();
 
-            var publisherChannelAwaiter = publishersFactory.CreateChannelAwaiter();
+            var publisherChannelAwaiter = publishersCommunication.CreateChannelAwaiter();
             var publicationRequestAcceptor = new NewChannelRequestAcceptor(publisherChannelAwaiter);
             publicationRequestAcceptor.ClientAccepted += PublisherChannelAccepted;
 

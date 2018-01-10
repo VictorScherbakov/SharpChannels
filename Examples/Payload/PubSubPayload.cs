@@ -25,13 +25,13 @@ namespace Examples.Payload
                 .UsingSendTimeout(TimeSpan.FromHours(1))
                 .Build();
 
-            var factory = new IntradomainCommunicationObjectsFactory<StringMessage>(new IntradomainEndpoint("pubsubpayload"),
-                                                                                    new StringMessageSerializer(),
-                                                                                    ChannelSettings.GetDefault(),
-                                                                                    connectionSettings,
-                                                                                    null);
+            var communication = new IntradomainCommunication<StringMessage>(new IntradomainEndpoint("pubsubpayload"),
+                                                                            new StringMessageSerializer(),
+                                                                            ChannelSettings.GetDefault(),
+                                                                            connectionSettings,
+                                                                            null);
 
-            return Scenarios.PubSub.Publisher(factory);
+            return Scenarios.PubSub.Publisher(communication);
         }
 
         private IPublisher<StringMessage> StartTcpPublisher()
@@ -40,35 +40,35 @@ namespace Examples.Payload
                 .UsingSendTimeout(TimeSpan.FromHours(1))
                 .Build();
 
-            var factory = new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Any, 2000),
-                                                                            new StringMessageSerializer(),
-                                                                            ChannelSettings.GetDefault(), 
-                                                                            connectionSettings,
-                                                                            null);
+            var communication = new TcpCommunication<StringMessage>(new TcpEndpointData(IPAddress.Any, 2000),
+                                                                    new StringMessageSerializer(),
+                                                                    ChannelSettings.GetDefault(), 
+                                                                    connectionSettings,
+                                                                    null);
 
-            return Scenarios.PubSub.Publisher(factory);
+            return Scenarios.PubSub.Publisher(communication);
         }
 
-        private ICommunicationObjectsFactory<StringMessage> GetTcpSubscriberFactory()
+        private ICommunication<StringMessage> GetTcpSubscriberCommunication()
         {
             var connectionSettings = new TcpConnectionSettingsBuilder()
                 .UsingReceiveTimeout(TimeSpan.FromHours(1))
                 .Build();
 
-            return new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Loopback, 2000),
+            return new TcpCommunication<StringMessage>(new TcpEndpointData(IPAddress.Loopback, 2000),
                                                                      new StringMessageSerializer(),
                                                                      ChannelSettings.GetDefault(),
                                                                      connectionSettings,
                                                                      null);
         }
 
-        private ICommunicationObjectsFactory<StringMessage> GetIntradomainSubscriberFactory()
+        private ICommunication<StringMessage> GetIntradomainSubscriberCommunication()
         {
             var connectionSettings = new IntradomainConnectionSettingsBuilder()
                 .UsingReceiveTimeout(TimeSpan.FromHours(1))
                 .Build();
 
-            return new IntradomainCommunicationObjectsFactory<StringMessage>(new IntradomainEndpoint("pubsubpayload"),
+            return new IntradomainCommunication<StringMessage>(new IntradomainEndpoint("pubsubpayload"),
                                                                              new StringMessageSerializer(),
                                                                              ChannelSettings.GetDefault(),
                                                                              connectionSettings,
@@ -77,11 +77,11 @@ namespace Examples.Payload
 
         private void Subscribe(Transport transport)
         {
-            var factory = transport == Transport.Tcp
-                ? GetTcpSubscriberFactory()
-                : GetIntradomainSubscriberFactory();
+            var communication = transport == Transport.Tcp
+                ? GetTcpSubscriberCommunication()
+                : GetIntradomainSubscriberCommunication();
 
-            Scenarios.PubSub.SetupSubscription(factory, new []{"topic"})
+            Scenarios.PubSub.SetupSubscription(communication, new []{"topic"})
                 .UsingMessageReceivedHandler((sender, a) =>
                 {
                     Interlocked.Increment(ref _messagesReceived);

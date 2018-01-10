@@ -96,11 +96,11 @@
     <Compile Include="Communication\Scenarios.RequestResponse.cs" />
     <Compile Include="Communication\SubscriptionManager.cs" />
     <Compile Include="Contracts\Enforce.cs" />
-    <Compile Include="IntradomainCommunicationObjectsFactory.cs" />
+    <Compile Include="IntradomainCommunication.cs" />
     <Compile Include="Messages\PubSub\SubscribeMessage.cs" />
     <Compile Include="Serialization\PubSub\SubscribeMessageSerializer.cs" />
-    <Compile Include="TcpCommunicationObjectsFactory.cs" />
-    <Compile Include="ICommunicationObjectsFactory.cs" />
+    <Compile Include="TcpCommunication.cs" />
+    <Compile Include="ICommunication.cs" />
     <Compile Include="Messages\MessageEventArgs.cs" />
     <Compile Include="Communication\Requester.cs" />
     <Compile Include="Messages\MessageType.cs" />

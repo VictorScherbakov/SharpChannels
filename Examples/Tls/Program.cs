@@ -23,14 +23,14 @@ namespace Examples.Tls
 
             var serverTlsWrapper = new ServerTlsWrapper(new X509Certificate2("server.pfx"), false, CertificateValidationCallback);
 
-            ICommunicationObjectsFactory<StringMessage> serverFactory = 
-                new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Any, 2000),
+            ICommunication<StringMessage> serverCommunication = 
+                new TcpCommunication<StringMessage>(new TcpEndpointData(IPAddress.Any, 2000),
                                                                   serializer,
                                                                   ChannelSettings.GetDefault(),
                                                                   TcpConnectionSettingsBuilder.GetDefaultSettings(),
                                                                   serverTlsWrapper);
 
-            var server = Scenarios.RequestResponse.SetupServer(serverFactory)
+            var server = Scenarios.RequestResponse.SetupServer(serverCommunication)
                 .UsingNewClientHandler((sender, a) => { Console.WriteLine("channel opened"); })
                 .UsingRequestHandler((sender, a) => { a.Response = new StringMessage(a.Request.Message.Replace("request", "response")); })
                 .UsingChannelClosedHandler((sender, a) => { Console.WriteLine("channel closed"); })
@@ -41,14 +41,14 @@ namespace Examples.Tls
                                                         false,
                                                         CertificateValidationCallback);
 
-            ICommunicationObjectsFactory<StringMessage> clientFactory = 
-                new TcpCommunicationObjectsFactory<StringMessage>(new TcpEndpointData(IPAddress.Loopback, 2000),
+            ICommunication<StringMessage> clientCommunication = 
+                new TcpCommunication<StringMessage>(new TcpEndpointData(IPAddress.Loopback, 2000),
                                                                   serializer,
                                                                   ChannelSettings.GetDefault(),
                                                                   TcpConnectionSettingsBuilder.GetDefaultSettings(),
                                                                   clientTlsWrapper);
 
-            var r = Scenarios.RequestResponse.Requester(clientFactory);
+            var r = Scenarios.RequestResponse.Requester(clientCommunication);
 
             using (r.Channel)
             {

@@ -16,5 +16,10 @@ namespace SharpChannels.Core.Messages
         {
             return Message;
         }
+
+        public static explicit operator StringMessage(string value)
+        {
+            return new StringMessage(value);
+        }
     }
 }
