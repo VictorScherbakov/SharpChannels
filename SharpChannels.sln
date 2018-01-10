@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tls", "Examples\Tls\Tls.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpChannels.Security", "SharpChannels.Security\SharpChannels.Security.csproj", "{C389C58F-7D21-4E7B-A4B6-066A342ACF2B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bus", "Examples\Bus\Bus.csproj", "{8DFCEBC3-9669-4E8E-B9EE-E7479952E118}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,10 @@ Global
 		{C389C58F-7D21-4E7B-A4B6-066A342ACF2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C389C58F-7D21-4E7B-A4B6-066A342ACF2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C389C58F-7D21-4E7B-A4B6-066A342ACF2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8DFCEBC3-9669-4E8E-B9EE-E7479952E118}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8DFCEBC3-9669-4E8E-B9EE-E7479952E118}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8DFCEBC3-9669-4E8E-B9EE-E7479952E118}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8DFCEBC3-9669-4E8E-B9EE-E7479952E118}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,5 +95,6 @@ Global
 		{F766B268-6A78-4703-BF1A-B33F75DC13D2} = {7B61671D-E7EA-4542-8EDD-D6854F710BBE}
 		{B2C3730B-93CF-4C81-AF32-D80E353A542A} = {7B61671D-E7EA-4542-8EDD-D6854F710BBE}
 		{74B8297B-F352-4196-9B61-01E5160C16A8} = {7B61671D-E7EA-4542-8EDD-D6854F710BBE}
+		{8DFCEBC3-9669-4E8E-B9EE-E7479952E118} = {7B61671D-E7EA-4542-8EDD-D6854F710BBE}
 	EndGlobalSection
 EndGlobal

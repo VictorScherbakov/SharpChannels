@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using SharpChannels.Core.Channels;
 using SharpChannels.Core.Messages;
 
 namespace SharpChannels.Core.Communication
@@ -10,6 +11,8 @@ namespace SharpChannels.Core.Communication
         void Close();
 
         int SubscriprionNumber { get; }
+
+        event EventHandler<ClientAcceptedEventArgs> ClientSubscribed;
 
         void Broadcast(string topic, IMessage message);
         void ParallelBroadcast(string topic, IMessage message, int parallelismDegree);

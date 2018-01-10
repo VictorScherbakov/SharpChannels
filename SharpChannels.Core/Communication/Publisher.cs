@@ -23,7 +23,8 @@ namespace SharpChannels.Core.Communication
         {
             try
             {
-                channel.Send(message);
+                if(channel.IsOpened)
+                    channel.Send(message);
             }
             catch (DataTransferException ex) when(ex.Code == DataTransferErrorCode.ChannelClosed)
             {
@@ -132,8 +133,11 @@ namespace SharpChannels.Core.Communication
             {
                 var subscription = (SubscribeMessage)args.Channel.Receive(_subscribeMessageSerializer);
                 _subscriptionManager.AddSubscription(args.Channel, subscription.Topics);
+                ClientSubscribed?.Invoke(this, args);
             });
         }
+
+        public event EventHandler<ClientAcceptedEventArgs> ClientSubscribed;
 
         public Publisher(INewChannelRequestAcceptor newChannelRequestAcceptor, bool stopAcceptorOnClose)
         {

@@ -59,6 +59,11 @@
     <Compile Include="Channels\Intradomain\IntradomainEndpoint.cs" />
     <Compile Include="Channels\Intradomain\IntradomainConnectionSettings.cs" />
     <Compile Include="Channels\Intradomain\IntradomainStream.cs" />
+    <Compile Include="Communication\BusClient.cs" />
+    <Compile Include="Communication\BusServer.cs" />
+    <Compile Include="Communication\IBusClient.cs" />
+    <Compile Include="Communication\IBusServer.cs" />
+    <Compile Include="Communication\Scenarios.Bus.cs" />
     <Compile Include="Communication\Scenarios.PubSub.cs" />
     <Compile Include="Security\ISecurityWrapper.cs" />
     <Compile Include="Channels\NewChannelRequestAcceptor.cs" />

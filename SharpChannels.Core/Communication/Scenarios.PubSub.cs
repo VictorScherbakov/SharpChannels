@@ -31,8 +31,7 @@ namespace SharpChannels.Core.Communication
                 return new SubscriptionSetup<TMessage>(factory, topics);
             }
 
-            public class SubscriptionSetup<TMessage>
-                where TMessage : IMessage
+            public class SubscriptionSetup<TMessage> where TMessage : IMessage
             {
                 private readonly ICommunicationObjectsFactory<TMessage> _factory;
                 private readonly IEnumerable<string> _topics;

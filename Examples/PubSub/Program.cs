@@ -16,7 +16,7 @@ namespace Examples.PubSub
 
         private static IChannel<StringMessage> Subscribe(ICommunicationObjectsFactory<StringMessage> factory, string clientName)
         {
-            return Scenarios.PubSub.SetupSubscription(factory, new []{ "topic" })
+            return Scenarios.PubSub.SetupSubscription(factory, new[] { "topic" })
                     .UsingMessageReceivedHandler((sender, a) => { Console.WriteLine($"{clientName} received message: {a.Message}"); })
                     .UsingChannelClosedHandler((sender, args) => { Interlocked.Increment(ref _closedChannels); })
                     .Go();
