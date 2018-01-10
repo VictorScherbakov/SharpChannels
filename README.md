@@ -50,11 +50,11 @@ Server side:
 ```c#
 var serializer = new StringMessageSerializer();
 
-var serverFactory = new TcpCommunicationObjectsFactory<StringMessage>(
+var serverCommunication = new TcpCommunication<StringMessage>(
                             new TcpEndpointData(IPAddress.Any, 2000), 
                             serializer);
 
-var server = Scenarios.RequestResponse.SetupServer(serverFactory)
+var server = Scenarios.RequestResponse.SetupServer(serverCommunication)
     .UsingNewClientHandler((sender, a) => { Console.WriteLine("channel opened"); })
     .UsingRequestHandler((sender, a) => 
             { 
@@ -67,11 +67,11 @@ var server = Scenarios.RequestResponse.SetupServer(serverFactory)
 
 Client side:
 ```c#
-var clientFactory = new TcpCommunicationObjectsFactory<StringMessage>(
+var clientCommunication = new TcpCommunication<StringMessage>(
                             new TcpEndpointData(IPAddress.Loopback, 2000), 
                             serializer);
 
-var r = Scenarios.RequestResponse.Requester(clientFactory);
+var r = Scenarios.RequestResponse.Requester(clientCommunication);
 
 using (r.Channel)
 {
