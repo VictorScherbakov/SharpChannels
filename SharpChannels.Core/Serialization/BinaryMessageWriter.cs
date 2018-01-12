@@ -5,14 +5,20 @@ namespace SharpChannels.Core.Serialization
 {
     internal class BinaryMessageWriter
     {
-        public static void Write(Stream stream, IBinaryMessageData message)
+        private readonly BinaryWriter _binaryWriter;
+
+        public BinaryMessageWriter(Stream stream)
         {
-            var bw = new BinaryWriter(stream);
+            _binaryWriter = new BinaryWriter(stream);
+        }
 
-            bw.Write((ushort)message.Type);
-            bw.Write(message.Data.Length);
+        public void Write(IBinaryMessageData message)
+        {
+            _binaryWriter.Write((ushort)message.Type);
+            _binaryWriter.Write(message.Data.Length);
 
-            bw.Write(message.Data);
+            _binaryWriter.Write(message.Data);
+            _binaryWriter.Flush();
         }
     }
 }

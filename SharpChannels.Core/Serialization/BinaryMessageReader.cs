@@ -1,20 +1,28 @@
 ﻿using System;
 using System.IO;
+using SharpChannels.Core.Contracts;
 using SharpChannels.Core.Messages;
 
 namespace SharpChannels.Core.Serialization
 {
     internal class BinaryMessageReader
     {
-        public static IBinaryMessageData Read(Stream stream, Action<int> checkMessageLength)
-        {
-            var br = new BinaryReader(stream);
+        private readonly BinaryReader _binaryReader;
 
-            var type = br.ReadUInt16();
-            var length = br.ReadInt32();
+        public BinaryMessageReader(Stream stream)
+        {
+            Enforce.NotNull(stream, nameof(stream));
+
+            _binaryReader = new BinaryReader(stream);
+        }
+
+        public IBinaryMessageData Read(Action<int> checkMessageLength)
+        {
+            var type = _binaryReader.ReadUInt16();
+            var length = _binaryReader.ReadInt32();
             checkMessageLength?.Invoke(length);
 
-            var buffer = br.ReadBytes(length);
+            var buffer = _binaryReader.ReadBytes(length);
 
             if (buffer.Length != length)
                 throw new EndOfStreamException();

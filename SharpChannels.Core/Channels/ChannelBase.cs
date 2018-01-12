@@ -19,13 +19,16 @@ namespace SharpChannels.Core.Channels
 
         protected abstract void CloseInternal();
 
-        protected abstract Stream GetStream();
         private Stream _wrappedStream;
+        private readonly Lazy<BinaryMessageWriter> _binaryMessageWriter;
+        private readonly Lazy<BinaryMessageReader> _binaryMessageReader;
+        protected abstract Stream GetStream();
         protected virtual ISecurityWrapper SecurityWrapper => null;
 
         protected int MaxMessageLength { get; set; }
 
         public IMessageSerializer Serializer { get; protected set; }
+        
 
         protected void RequestHandshake()
         {
@@ -62,7 +65,11 @@ namespace SharpChannels.Core.Channels
             Enforce.State.FitsTo(!_isHandShaken, "Already handshaken");
         }
 
-
+        protected ChannelBase()
+        {
+            _binaryMessageWriter = new Lazy<BinaryMessageWriter>(() => new BinaryMessageWriter(GetWrappedStream()));
+            _binaryMessageReader = new Lazy<BinaryMessageReader>(() => new BinaryMessageReader(GetWrappedStream()));
+        }
 
         private Stream GetWrappedStream()
         {
@@ -116,8 +123,7 @@ namespace SharpChannels.Core.Channels
             {
                 lock (_writeLock)
                 {
-                    BinaryMessageWriter.Write(GetWrappedStream(), binaryMessage);
-                    GetWrappedStream().Flush();
+                    _binaryMessageWriter.Value.Write(binaryMessage);
                 }
             }
             catch (IOException ex)
@@ -162,7 +168,7 @@ namespace SharpChannels.Core.Channels
             {
                 lock (_readLock)
                 {
-                    return BinaryMessageReader.Read(GetWrappedStream(), CheckMessageLength);
+                    return _binaryMessageReader.Value.Read(CheckMessageLength);
                 }
             }
             catch (IOException ex)
