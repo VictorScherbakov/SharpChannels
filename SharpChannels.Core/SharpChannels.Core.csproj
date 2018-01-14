@@ -98,6 +98,7 @@
     <Compile Include="Contracts\Enforce.cs" />
     <Compile Include="IntradomainCommunication.cs" />
     <Compile Include="Messages\PubSub\SubscribeMessage.cs" />
+    <Compile Include="Serialization\Endianness.cs" />
     <Compile Include="Serialization\PubSub\SubscribeMessageSerializer.cs" />
     <Compile Include="TcpCommunication.cs" />
     <Compile Include="ICommunication.cs" />

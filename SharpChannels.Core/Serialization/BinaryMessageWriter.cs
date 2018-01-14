@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using SharpChannels.Core.Messages;
 
 namespace SharpChannels.Core.Serialization
@@ -14,8 +15,17 @@ namespace SharpChannels.Core.Serialization
 
         public void Write(IBinaryMessageData message)
         {
-            _binaryWriter.Write((ushort)message.Type);
-            _binaryWriter.Write(message.Data.Length);
+            var type = (ushort)message.Type;
+            var length = message.Data.Length;
+
+            if (!BitConverter.IsLittleEndian)
+            {
+                Endianness.Swap(ref type);
+                Endianness.Swap(ref length);
+            }
+
+            _binaryWriter.Write(type);
+            _binaryWriter.Write(length);
 
             _binaryWriter.Write(message.Data);
             _binaryWriter.Flush();

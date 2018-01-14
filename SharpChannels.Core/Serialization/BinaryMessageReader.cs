@@ -20,6 +20,13 @@ namespace SharpChannels.Core.Serialization
         {
             var type = _binaryReader.ReadUInt16();
             var length = _binaryReader.ReadInt32();
+
+            if (!BitConverter.IsLittleEndian)
+            {
+                Endianness.Swap(ref type);
+                Endianness.Swap(ref length);
+            }
+
             checkMessageLength?.Invoke(length);
 
             var buffer = _binaryReader.ReadBytes(length);
