@@ -22,6 +22,8 @@ namespace SharpChannels.Core.Serialization
         public IMessage Deserialize(IBinaryMessageData messageData)
         {
             var code = BitConverter.ToUInt16(messageData.Data, 0);
+            if(!BitConverter.IsLittleEndian)
+                Endianness.Swap(ref code);
 
             if(!_serializersByCode.ContainsKey(code))
                 throw new NotSupportedException($"Code {code} is not supported");
@@ -43,9 +45,14 @@ namespace SharpChannels.Core.Serialization
                 
                 var buffer = new byte[binaryData.Data.Length + sizeof (ushort)];
 
-                var code = BitConverter.GetBytes(_codes[serializer]);
-                Buffer.BlockCopy(code, 0, buffer, 0, code.Length);
-                Buffer.BlockCopy(binaryData.Data, 0, buffer, code.Length, binaryData.Data.Length);
+                var code = _codes[serializer];
+                if (!BitConverter.IsLittleEndian)
+                    Endianness.Swap(ref code);
+
+                var codeBytes = BitConverter.GetBytes(code);
+
+                Buffer.BlockCopy(codeBytes, 0, buffer, 0, codeBytes.Length);
+                Buffer.BlockCopy(binaryData.Data, 0, buffer, codeBytes.Length, binaryData.Data.Length);
 
                 return new BinaryMessageData(buffer);
             }
