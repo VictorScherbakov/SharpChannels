@@ -9,8 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Examples.PubSub</RootNamespace>
     <AssemblyName>PubSub</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -44,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\SharpChannels.Core\SharpChannels.Core.csproj">
-      <Project>{3A58294D-07FA-4D64-82FD-21F873B4863B}</Project>
+      <Project>{e1322cd5-6ecb-4b87-bc65-f663b2a7d8f6}</Project>
       <Name>SharpChannels.Core</Name>
     </ProjectReference>
   </ItemGroup>

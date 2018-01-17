@@ -9,8 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Examples.Tls</RootNamespace>
     <AssemblyName>Tls</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -50,7 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\SharpChannels.Core\SharpChannels.Core.csproj">
-      <Project>{3a58294d-07fa-4d64-82fd-21f873b4863b}</Project>
+      <Project>{e1322cd5-6ecb-4b87-bc65-f663b2a7d8f6}</Project>
       <Name>SharpChannels.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SharpChannels.Security\SharpChannels.Security.csproj">
