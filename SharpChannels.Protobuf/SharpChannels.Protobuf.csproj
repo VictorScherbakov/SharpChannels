@@ -3,6 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>SharpChannels.Core.Serialization.Protobuf</RootNamespace>
+    <Authors>Victor Scherbakov</Authors>
+    <Company />
+    <Version>1.0.0-beta</Version>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

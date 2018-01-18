@@ -5,12 +5,14 @@
     <RootNamespace>SharpChannels.Core</RootNamespace>
     <PackageId>SharpChannels.Core</PackageId>
     <Authors>Victor Scherbakov</Authors>
-    <Company>SharpChannels.Core</Company>
+    <Company></Company>
     <Product>SharpChannels.Core</Product>
     <Description>Lightweight communication library for .NET</Description>
     <PackageProjectUrl>https://github.com/VictorScherbakov/SharpChannels</PackageProjectUrl>
     <AssemblyName>SharpChannels.Core</AssemblyName>
     <SignAssembly>false</SignAssembly>
+    <Version>1.0.0-beta</Version>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
   </PropertyGroup>
 
 </Project>
