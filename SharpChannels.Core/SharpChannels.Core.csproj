@@ -13,6 +13,8 @@
     <SignAssembly>false</SignAssembly>
     <Version>1.0.0-beta</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageLicenseUrl>https://github.com/VictorScherbakov/SharpChannels/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageTags>communication tcp network messaging bus</PackageTags>
   </PropertyGroup>
 
 </Project>
