@@ -7,14 +7,15 @@
     <Company />
     <Version>1.0.0-beta</Version>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Description>Protobuf based serializer for SharpChannels</Description>
+    <PackageTags>communication tcp network messaging bus serialization</PackageTags>
+    <PackageLicenseUrl>https://github.com/VictorScherbakov/SharpChannels/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/VictorScherbakov/SharpChannels</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="protobuf-net" Version="2.3.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\SharpChannels.Core\SharpChannels.Core.csproj" />
+    <PackageReference Include="SharpChannels.Core" Version="1.0.0-beta" />
   </ItemGroup>
 
 </Project>
